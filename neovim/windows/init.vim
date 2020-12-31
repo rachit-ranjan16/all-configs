@@ -61,10 +61,15 @@ nnoremap <leader>pv :Lex <bar> :vertical resize -50<CR>
 " <bar> :wincmd l <bar> :vertical resize -20<CR>
 " Create log json file
 nnoremap <leader>logj :wincmd v <bar> :wincmd l <bar> :e E:\Logs\someLog.json <bar> :1,$d <CR>
-" Copy to System Clipboard
-nnoremap <leader>c "+y<CR>
-" Paste from System Clipboard
-nnoremap <leader>v "+p<CR>
+" Copy to system clipboard
+nnoremap <leader>c "+y
+" Paste from system clipboard
+nnoremap <leader>v "+p
+vnoremap <leader>p "+y
+" Cleanup file and paste from system clipboard
+nnoremap <leader>V gg"+yG
+" Delete selected visual block and paste content from _ register above it.
+vnoremap <leader>p "_dP
 " Open powershell terminal in horizontal split
 nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal powershell <CR>
 " Open cmd terminal in horizontal split
