@@ -73,6 +73,8 @@ let g:syntastic_shell_checkers = ['shellcheck']
 " -----------------
 " Vim stuff
 " -----------------
+" Experimenting leader remap. TODO Decide to keep or ditch
+let mapleader = "\<Space>"
 let g:qs_max_chars=150
 " set encoding to utf8
 set encoding=utf-8
@@ -153,9 +155,11 @@ nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
+nnoremap <leader>q :wincmd q<CR>
+nnoremap <leader>o :wincmd q<CR>
 " Vertical resizes
-nnoremap <Leader>+ :vertical resize +5<CR>
-nnoremap <Leader>- :vertical resize -5<CR>
+nnoremap <leader>+ :vertical resize +5<CR>
+nnoremap <leader>- :vertical resize -5<CR>
 " Copy to system clipboard
 nnoremap <leader>c "+y
 " Paste from system clipboard
@@ -165,6 +169,8 @@ vnoremap <leader>p "+y
 nnoremap <leader>V gg"+yG
 " Delete selected visual block and paste content from _ register above it.
 vnoremap <leader>p "_dP
+nnoremap <leader>w :w <CR>
+nnoremap <leader>wa :wa <CR>
 " Open terminal in horizontal split
 nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal /bin/bash <CR>
 " Clear search highlight.
