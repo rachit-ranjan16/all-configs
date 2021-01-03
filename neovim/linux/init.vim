@@ -169,8 +169,10 @@ vnoremap <leader>p "+y
 nnoremap <leader>V gg"+yG
 " Delete selected visual block and paste content from _ register above it.
 vnoremap <leader>p "_dP
+"Save and Quit short remaps
 nnoremap <leader>w :w <CR>
 nnoremap <leader>wa :wa <CR>
+nnoremap <leader>wq :wq <CR>
 " Open terminal in horizontal split
 nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal /bin/bash <CR>
 " Clear search highlight.
