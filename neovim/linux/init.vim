@@ -23,6 +23,7 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'xavierchow/vim-swagger-preview'
 Plug 'unblevable/quick-scope'
+Plug 'mbbill/undotree'
 call plug#end()
 
 " -----------------
@@ -100,11 +101,30 @@ set smartcase
 " set autochdir
 " set tab to 4 spaces
 set ts=4 sw=4
-set tabstop=4       " number of visual spaces per TAB
-set softtabstop=4   " number of spaces in tab when editing
+set tabstop=4 softtabstop=4
 set shiftwidth=4    " number of spaces to use for autoindent
 set expandtab
 set autoindent
+set noerrorbells
+"Undo stack over swap files
+set noswapfile
+set nobackup
+set undodir=~/.vim/undodir
+set undofile
+" incremental search match as the regex is being typed
+set incsearch
+set termguicolors
+" extra lines while scrolling
+set scrolloff=8
+" additional column on the left
+set signcolumn=yes
+" Give more space for displaying messages.
+set cmdheight=2
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=50
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
 " Enable folding
 set foldmethod=indent
 set foldlevel=99
@@ -122,8 +142,9 @@ au BufNewFile,BufRead *.js, *.html, *.css
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2
-" Turn on Relative Numbers
+" turn on relative numbers with the current line number
 set relativenumber
+set nu
 " set colorschene to onedark
 colorscheme gruvbox
 set background=dark
@@ -137,11 +158,12 @@ set background=dark
 
 " Fuzzy find files
 nnoremap <c-p> :Files<CR>
-"nnoremap <leader>F :Files<CR>
 " Refresh nvim config
 nnoremap <leader>rnc :source ~/.config/nvim/init.vim<CR>
 " Edit nvim config
 nnoremap <leader>enc :wincmd v<bar> :edit ~/.config/nvim/init.vim<bar> :wincmd =<CR>
+" show undo tree
+nnoremap <leader>u :UndotreeShow<CR>
 " Format Json File
 nnoremap <leader>fj :%!python -m json.tool <CR>
 " Format XML File
@@ -156,7 +178,7 @@ nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>q :wincmd q<CR>
-nnoremap <leader>o :wincmd q<CR>
+nnoremap <leader>o :wincmd o<CR>
 " Vertical resizes
 nnoremap <leader>+ :vertical resize +5<CR>
 nnoremap <leader>- :vertical resize -5<CR>
@@ -169,10 +191,12 @@ vnoremap <leader>p "+y
 nnoremap <leader>V gg"+yG
 " Delete selected visual block and paste content from _ register above it.
 vnoremap <leader>p "_dP
+nnoremap <leader>w :w <CR>
 "Save and Quit short remaps
 nnoremap <leader>w :w <CR>
 nnoremap <leader>wa :wa <CR>
 nnoremap <leader>wq :wq <CR>
+noremap <leader>wa :wa <CR>
 " Open terminal in horizontal split
 nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal /bin/bash <CR>
 " Clear search highlight.
@@ -194,5 +218,5 @@ nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gcm :G reset --hard <bar> :G checkout master <bar> :G pull origin master<CR>
 "Syntax Check
 nnoremap <leader>sc :SyntasticCheck<CR>
-"Whitespace Fixes"
+"whitespace Fixes
 nnoremap <leader>rw :StripWhitespace<CR>
