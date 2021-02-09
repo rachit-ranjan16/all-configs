@@ -70,7 +70,7 @@ let g:syntastic_shell_checkers = ['shellcheck']
 " Coc Configs
 " -----------------
 " Add `:Format` command to format current buffer.
-let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml' ]
+let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml', 'coc-rls' ]
 command! -nargs=0 Format :call CocAction('format')
 
 function! s:check_back_space() abort
@@ -256,3 +256,4 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 nmap <leader>rn <Plug>(coc-rename)
+nnoremap <leader>ff :Format <CR>
