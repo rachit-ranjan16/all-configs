@@ -1,15 +1,12 @@
 call plug#begin('~/AppData/Local/nvim/plugged')
-Plug 'iCyMind/NeoSolarized'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/indentpython.vim'
 Plug 'vim-syntastic/syntastic'
 Plug 'dbeniamine/cheat.sh-vim'
 Plug 'nvie/vim-flake8'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-vinegar'
-Plug 'https://github.com/PProvost/vim-ps1.git'
 Plug 'sheerun/vim-polyglot'
 Plug 'davidhalter/jedi-vim'
 Plug 'vuciv/vim-bujo'
@@ -19,7 +16,6 @@ Plug 'junegunn/fzf.vim'
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'xavierchow/vim-swagger-preview'
 Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -90,7 +86,6 @@ endfunction
 " -----------------
 "  Vim Stuff
 " -----------------
-
 let g:qs_max_chars=150
 " set encoding to utf8
 set encoding=utf-8
@@ -157,7 +152,7 @@ au BufNewFile,BufRead *.py
     \ set textwidth=79 |
     \ set expandtab |
     \ set autoindent |
-    \ set fileformat=unix
+    \ set fileformat=dos
 " Indentation for web files
 au BufNewFile,BufRead *.js, *.html, *.css
     \ set tabstop=2 |

@@ -1,17 +1,12 @@
 call plug#begin(expand('~/.config/nvim/plugged'))
-Plug 'iCyMind/NeoSolarized'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/indentpython.vim'
 Plug 'vim-syntastic/syntastic'
 Plug 'dbeniamine/cheat.sh-vim'
 Plug 'nvie/vim-flake8'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-vinegar'
-Plug 'vim-airline/vim-airline'
-Plug 'othree/xml.vim'
-Plug 'https://github.com/PProvost/vim-ps1.git'
 Plug 'sheerun/vim-polyglot'
 Plug 'davidhalter/jedi-vim'
 Plug 'vuciv/vim-bujo'
@@ -21,9 +16,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'xavierchow/vim-swagger-preview'
 Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 " -----------------
@@ -72,10 +67,33 @@ let g:syntastic_python_checkers = ['pylint']
 let g:syntastic_shell_checkers = ['shellcheck']
 
 " -----------------
+" Coc Configs
+" -----------------
+" Add `:Format` command to format current buffer.
+let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml' ]
+command! -nargs=0 Format :call CocAction('format')
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+
+" -----------------
 " Vim stuff
 " -----------------
-" Experimenting leader remap. TODO Decide to keep or ditch
-let mapleader = "\<Space>"
+" map leader to space.
+let mapleader = " "
 let g:qs_max_chars=150
 " set encoding to utf8
 set encoding=utf-8
@@ -142,9 +160,11 @@ au BufNewFile,BufRead *.js, *.html, *.css
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2
-" turn on relative numbers with the current line number
+" Turn on relative numbers with the current line number
 set relativenumber
 set nu
+" Netrw open in vertical split
+let g:netrw_altv=1
 " set colorschene to onedark
 colorscheme gruvbox
 set background=dark
@@ -154,7 +174,6 @@ set background=dark
 " Remaps
 " -----------------
 " -----------------
-
 
 " Fuzzy find files
 nnoremap <c-p> :Files<CR>
@@ -216,7 +235,24 @@ nnoremap <leader>gSl :G stash list<CR>
 nnoremap <leader>gb :GBranches <CR>
 nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gcm :G reset --hard <bar> :G checkout master <bar> :G pull origin master<CR>
-"Syntax Check
+"Syntax check
 nnoremap <leader>sc :SyntasticCheck<CR>
 "whitespace Fixes
 nnoremap <leader>rw :StripWhitespace<CR>
+" Coc stuff
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+nmap <leader>rn <Plug>(coc-rename)
