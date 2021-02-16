@@ -19,6 +19,7 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'preservim/nerdcommenter'
 call plug#end()
 
 " -----------------
