@@ -185,8 +185,6 @@ nnoremap <leader>enc :wincmd v<bar> :edit C:\Users\raranjan\AppData\Local\nvim\i
 nnoremap <leader>epcp :wincmd v<bar> :edit C:\Users\raranjan\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 <bar> :wincmd =<CR>
 " show undo tree
 nnoremap <leader>u :UndotreeShow<CR>
-" Format Json File
-nnoremap <leader>fj :%!python -m json.tool <CR>
 " Cat File
 nnoremap <leader>cat :!type %<CR>
 " Create log json file
@@ -204,7 +202,7 @@ nnoremap <leader>o :wincmd o<CR>
 nnoremap <leader>+ :vertical resize +10<CR>
 nnoremap <leader>- :vertical resize -10<CR>
 " File Explorer View
-nnoremap <leader>pv :Lex <bar> :vertical resize -90<CR>
+nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 " Copy to system clipboard
 nnoremap <leader>c "+y
 " Paste from system clipboard
@@ -216,8 +214,9 @@ nnoremap <leader>V gg"+yG
 vnoremap <leader>p "_dP
 "Save and Quit short remaps
 nnoremap <leader>w :w! <CR>
-nnoremap <leader>wa :wa <CR>
+nnoremap <leader>wa :wa! <CR>
 nnoremap <leader>wq :wq <CR>
+nnoremap <leader>Q :qa! <CR>
 " Open powershell terminal in horizontal split
 nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal powershell <CR>
 " Clear search highlight
@@ -258,3 +257,4 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 nmap <leader>rn <Plug>(coc-rename)
+nnoremap <leader>ff :Format <CR>

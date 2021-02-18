@@ -178,19 +178,17 @@ set background=dark
 " Fuzzy find files
 nnoremap <c-p> :Files<CR>
 " Refresh nvim config
-nnoremap <leader>rnc :source ~/.config/nvim/init.vim<CR>
+nnoremap <leader>rnc :w ~/.config/nvim/init.vim <bar>:source ~/.config/nvim/init.vim<CR>
 " Edit nvim config
 nnoremap <leader>enc :wincmd v<bar> :edit ~/.config/nvim/init.vim<bar> :wincmd =<CR>
 " show undo tree
 nnoremap <leader>u :UndotreeShow<CR>
-" Format Json File
-nnoremap <leader>fj :%!python -m json.tool <CR>
 " Format XML File
 nnoremap <leader>fx :%!python3 -c "import xml.dom.minidom, sys; print(xml.dom.minidom.parse(sys.stdin).toprettyxml())"<CR>
 " Delete all lines in the current file.
 nnoremap <leader>dL :1,$d <CR>
 " File Explorer View
-nnoremap <leader>pv :Lex <bar> :vertical resize -50<CR>
+nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 " Window Stuff
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
@@ -212,10 +210,10 @@ nnoremap <leader>V gg"+yG
 vnoremap <leader>p "_dP
 nnoremap <leader>w :w <CR>
 "Save and Quit short remaps
-nnoremap <leader>w :w <CR>
-nnoremap <leader>wa :wa <CR>
+nnoremap <leader>w :w! <CR>
+nnoremap <leader>wa :wa! <CR>
 nnoremap <leader>wq :wq <CR>
-noremap <leader>wa :wa <CR>
+nnoremap <leader>Q :qa <CR>
 " Open terminal in horizontal split
 nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal /bin/bash <CR>
 " Clear search highlight.
