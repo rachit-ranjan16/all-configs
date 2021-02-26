@@ -257,5 +257,7 @@ if has('nvim')
 else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
-nmap <leader>rn <Plug>(coc-rename)
+" Coc format file
 nnoremap <leader>ff :Format <CR>
+" Coc list all diagnostic errors
+nnoremap <leader>ae :CocList diagnostics<CR>
