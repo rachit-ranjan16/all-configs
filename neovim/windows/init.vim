@@ -192,6 +192,10 @@ nnoremap <leader>cat :!type %<CR>
 nnoremap <leader>logj :wincmd v <bar> :wincmd l <bar> :e E:\Logs\someLog.json <bar> :1,$d <CR>
 " Delete all lines in the current file.
 nnoremap <leader>dL :1,$d <CR>
+" Buffer Stuff
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>bn :bnext<CR>
+nnoremap <leader>bp :bprev<CR>
 " Window Stuff
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
@@ -205,7 +209,7 @@ nnoremap <leader>- :vertical resize -10<CR>
 " File Explorer View
 nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 " Copy to system clipboard
-nnoremap <leader>c "+y
+vnoremap <leader>c "+y
 " Paste from system clipboard
 nnoremap <leader>v "+p
 vnoremap <leader>c "+y

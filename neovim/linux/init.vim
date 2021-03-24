@@ -190,6 +190,10 @@ nnoremap <leader>fx :%!python3 -c "import xml.dom.minidom, sys; print(xml.dom.mi
 nnoremap <leader>dL :1,$d <CR>
 " File Explorer View
 nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
+" Buffer Stuff
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>bn :bnext<CR>
+nnoremap <leader>bp :bprev<CR>
 " Window Stuff
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
@@ -201,7 +205,7 @@ nnoremap <leader>o :wincmd o<CR>
 nnoremap <leader>+ :vertical resize +5<CR>
 nnoremap <leader>- :vertical resize -5<CR>
 " Copy to system clipboard
-nnoremap <leader>c "+y
+vnoremap <leader>c "+y
 " Paste from system clipboard
 nnoremap <leader>v "+p
 vnoremap <leader>p "+y
