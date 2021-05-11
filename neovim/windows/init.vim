@@ -184,7 +184,9 @@ nnoremap <leader>rnc :w! C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :so
 nnoremap <leader>enc :wincmd v<bar> :edit C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :wincmd =<CR>
 " Edit Powershell Core Profile
 nnoremap <leader>epcp :wincmd v<bar> :edit C:\Users\raranjan\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 <bar> :wincmd =<CR>
-" show undo tree
+" Show Buffers
+nnoremap <leader>b :Buffers<CR>
+" Show undo tree
 nnoremap <leader>u :UndotreeShow<CR>
 " Cat File
 nnoremap <leader>cat :!type %<CR>
@@ -219,11 +221,11 @@ nnoremap <leader>V gg"+yG
 vnoremap <leader>p "_dP
 "Save and Quit short remaps
 nnoremap <leader>w :w! <CR>
-nnoremap <leader>wa :wa! <CR>
 nnoremap <leader>wq :wq <CR>
 nnoremap <leader>Q :qa! <CR>
-" Open powershell terminal in horizontal split
-nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal powershell <CR>
+nnoremap <leader>qa :qa! <CR>
+" Open powershell core terminal in horizontal split
+nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh <CR>
 " Clear search highlight
 nnoremap <leader><space> :noh<CR>
 "Git Stuff
