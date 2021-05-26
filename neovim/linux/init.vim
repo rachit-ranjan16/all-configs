@@ -170,7 +170,13 @@ set background=dark
 " -----------------
 
 " Fuzzy find files
-nnoremap <c-p> <cmd>Telescope find_files<CR>
+nnoremap <c-p> : find_files<CR>
+" Live Grep for strings
+nnoremap <leader>lg :lua require("telescope.builtin").live_grep()<CR>
+" Find Strings
+nnoremap <leader>F :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+" Help
+nnoremap <leader>H :lua require("telescope.builtin").help_tags()<CR>
 " Refresh nvim config
 nnoremap <leader>rnc :w ~/.config/nvim/init.vim <bar>:source ~/.config/nvim/init.vim<CR>
 " Edit nvim config
