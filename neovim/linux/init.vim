@@ -3,7 +3,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
 Plug 'dbeniamine/cheat.sh-vim'
-Plug 'nvie/vim-flake8'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-vinegar'
@@ -11,13 +10,16 @@ Plug 'sheerun/vim-polyglot'
 Plug 'davidhalter/jedi-vim'
 Plug 'vuciv/vim-bujo'
 Plug 'jremmen/vim-ripgrep'
-Plug 'junegunn/fzf', {'do': { -> fzf#install() }}
-Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+" TODO Check whether still required with all the lua magic
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
+" TODO Check whether still required with lsp integration
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/nerdcommenter'
 call plug#end()
@@ -29,18 +31,9 @@ call plug#end()
 " -----------------
 
 " -----------------
-" Fzf config
-" -----------------
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8} }
-let $FZF_DEFAULT_OPTS = '--reverse'
-let $FZF_DEFAULT_COMMAND='rg --files'
-" Fuzzy Finder Settings
-set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe,*\\packages\\*,*\\obj\\*,*\\objd\\*,*\\out\\*,*\\bin\\*
-
-" -----------------
 " Telescope configs
 " -----------------
-"lua require('telescope').setup({defaults = {file_sorter = require('telescope.sorters').get_fzy_sorter}})
+lua require('telescope').setup({defaults = {file_sorter = require('telescope.sorters').get_fzy_sorter}})
 
 " -----------------
 " Syntastic Configs
@@ -177,7 +170,7 @@ set background=dark
 " -----------------
 
 " Fuzzy find files
-nnoremap <c-p> :Files<CR>
+nnoremap <c-p> <cmd>Telescope find_files<CR>
 " Refresh nvim config
 nnoremap <leader>rnc :w ~/.config/nvim/init.vim <bar>:source ~/.config/nvim/init.vim<CR>
 " Edit nvim config
@@ -191,9 +184,7 @@ nnoremap <leader>dL :1,$d <CR>
 " File Explorer View
 nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 " Buffer Stuff
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>bn :bnext<CR>
-nnoremap <leader>bp :bprev<CR>
+nnoremap <leader>b <cmd>Telescope buffers<CR>
 " Window Stuff
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
@@ -240,7 +231,9 @@ nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gcm :G reset --hard <bar> :G checkout master <bar> :G pull origin master<CR>
 "Syntax check
 nnoremap <leader>sc :SyntasticCheck<CR>
-"whitespace Fixes
+" Help Tags
+nnoremap <leader>th <cmd>Telescope help_tags<cr>
+"Whitespace Fixes
 nnoremap <leader>rw :StripWhitespace<CR>
 " Coc stuff
 nnoremap <silent> K :call <SID>show_documentation()<CR>

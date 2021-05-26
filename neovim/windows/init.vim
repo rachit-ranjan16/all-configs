@@ -11,13 +11,13 @@ Plug 'sheerun/vim-polyglot'
 Plug 'davidhalter/jedi-vim'
 Plug 'vuciv/vim-bujo'
 Plug 'jremmen/vim-ripgrep'
-Plug 'junegunn/fzf', {'do': { -> fzf#install() }}
-Plug 'junegunn/fzf.vim'
+" TODO Check whether still required with all the lua magic
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
+" TODO Check whether still required with lsp integration
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/nerdcommenter'
 call plug#end()
@@ -29,13 +29,9 @@ call plug#end()
 " -----------------
 
 " -----------------
-" Fzf config
+" Telescope configs
 " -----------------
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8} }
-let $FZF_DEFAULT_OPTS = '--reverse'
-let $FZF_DEFAULT_COMMAND='rg --files'
-" Fuzzy Finder Settings
-set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe,*\\packages\\*,*\\obj\\*,*\\objd\\*,*\\out\\*,*\\bin\\*
+lua require('telescope').setup({defaults = {file_sorter = require('telescope.sorters').get_fzy_sorter}})
 
 " -----------------
 " Syntastic Configs
@@ -176,8 +172,7 @@ set background=dark
 " -----------------
 
 " Fuzzy find files
-nnoremap <c-p> :Files<CR>
-"nnoremap <leader>F :Files<CR>
+nnoremap <c-p> <cmd>Telescope find_files<CR>
 " Refresh nvim config
 nnoremap <leader>rnc :w! C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :source C:\Users\raranjan\AppData\Local\nvim\init.vim<CR>
 " Edit nvim config
@@ -185,7 +180,7 @@ nnoremap <leader>enc :wincmd v<bar> :edit C:\Users\raranjan\AppData\Local\nvim\i
 " Edit Powershell Core Profile
 nnoremap <leader>epcp :wincmd v<bar> :edit C:\Users\raranjan\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 <bar> :wincmd =<CR>
 " Show Buffers
-nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>b <cmd>Telescope buffers<CR>
 " Show undo tree
 nnoremap <leader>u :UndotreeShow<CR>
 " Cat File
