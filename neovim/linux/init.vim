@@ -13,8 +13,6 @@ Plug 'jremmen/vim-ripgrep'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-" TODO Check whether still required with all the lua magic
-Plug 'stsewd/fzf-checkout.vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'unblevable/quick-scope'
@@ -227,6 +225,8 @@ nnoremap <leader>lg :lua require("telescope.builtin").live_grep()<CR>
 nnoremap <leader>F :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
 " Help
 nnoremap <leader>H :lua require("telescope.builtin").help_tags()<CR>
+" List marks
+nnoremap <leader>lm :lua require("telescope.builtin").marks()<CR>
 " Refresh nvim config
 nnoremap <leader>rnc :w ~/.config/nvim/init.vim <bar>:source ~/.config/nvim/init.vim<CR>
 " Edit nvim config
@@ -280,9 +280,8 @@ nnoremap <leader>gc :G commit <bar> :wincmd = <CR>
 nnoremap <leader>gp :G push <CR>
 nnoremap <leader>gP :G pull <CR>
 nnoremap <leader>gS :G stash<CR>
-nnoremap <leader>gSa :G stash apply<CR>
-nnoremap <leader>gSl :G stash list<CR>
-nnoremap <leader>gb :GBranches <CR>
+nnoremap <leader>gSl :lua require("telescope.builtin").git_stash()<CR>
+nnoremap <leader>gb :lua require("telescope.builtin").git_branches()<CR>
 nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gcm :G reset --hard <bar> :G checkout master <bar> :G pull origin master<CR>
 "Syntax check
