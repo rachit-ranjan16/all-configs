@@ -221,7 +221,7 @@ set background=dark
 " -----------------
 
 " Fuzzy find files
-nnoremap <c-p> : find_files<CR>
+nnoremap <c-p> :lua require("telescope.builtin").find_files()<CR>
 " Live Grep for strings
 nnoremap <leader>lg :lua require("telescope.builtin").live_grep()<CR>
 " Find Strings
