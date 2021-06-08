@@ -150,6 +150,8 @@ let g:netrw_liststyle=3
 syntax enable
 " show line numbers
 set number
+" remove whitespaces in diff
+set diffopt+=iwhite
 "  show file stats
 set ruler
 " Enable auto reload

@@ -147,7 +147,9 @@ let g:netrw_liststyle=3
 syntax enable
 " show line numbers
 set number
-"  show file stats
+" remove whitespaces in diff
+set diffopt+=iwhite
+" show file stats
 set ruler
 " match paren
 let loaded_matchparen = 1
