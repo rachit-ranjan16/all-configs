@@ -171,7 +171,7 @@ set noerrorbells
 "Undo stack over swap files
 set noswapfile
 set nobackup
-set undodir=~/.vim/undodir
+set undodir=~/.vim/undodir2
 set undofile
 " incremental search match as the regex is being typed
 set incsearch
@@ -224,7 +224,7 @@ nnoremap <c-p> :lua require("telescope.builtin").find_files()<CR>
 " Live Grep for strings
 nnoremap <leader>lg :lua require("telescope.builtin").live_grep()<CR>
 " Find Strings
-nnoremap <leader>F :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+nnoremap <leader>f :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
 " Help
 nnoremap <leader>H :lua require("telescope.builtin").help_tags()<CR>
 " List marks
