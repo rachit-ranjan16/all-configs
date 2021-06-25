@@ -171,7 +171,7 @@ set noerrorbells
 "Undo stack over swap files
 set noswapfile
 set nobackup
-set undodir=~/.vim/undodir
+set undodir=~/.vim/undodir2
 set undofile
 " incremental search match as the regex is being typed
 set incsearch
