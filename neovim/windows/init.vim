@@ -7,15 +7,24 @@ Plug 'nvie/vim-flake8'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-vinegar'
+Plug 'https://github.com/PProvost/vim-ps1.git'
 Plug 'sheerun/vim-polyglot'
 Plug 'davidhalter/jedi-vim'
 Plug 'vuciv/vim-bujo'
 Plug 'jremmen/vim-ripgrep'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
+ "TODO Figure this out
+Plug 'neovim/nvim-lspconfig'
+"Plug 'hrsh7th/nvim-compe'
+"Plug 'glepnir/lspsaga.nvim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
-" TODO Check whether still required with lsp integration
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/nerdcommenter'
 call plug#end()
@@ -30,7 +39,7 @@ call plug#end()
 " Telescope configs
 " -----------------
 lua <<EOF
-require('telescope').setup{
+require('telescope').setup {
   defaults = {
     vimgrep_arguments = {
       'rg',
@@ -48,7 +57,7 @@ require('telescope').setup{
     initial_mode = "insert",
     selection_strategy = "reset",
     sorting_strategy = "descending",
-    layout_strategy = "horizontal",
+    layout_strategy = "vertical",
     layout_defaults = {
       horizontal = {
         mirror = false,
@@ -81,6 +90,19 @@ require('telescope').setup{
 }
 EOF
 
+" -----------------
+" Treesitter Configs
+" -----------------
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = {"rust" ,"python", "c_sharp", "comment", "java", "lua", "json",}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ignore_install = {}, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    disable = {},  -- list of languages that will be disabled
+  },
+}
+EOF
 
 " -----------------
 " Syntastic Configs
@@ -107,11 +129,12 @@ let g:syntastic_javascript_checkers = [ 'jshint' ]
 let g:syntastic_python_checkers = ['pylint']
 let g:syntastic_shell_checkers = ['shellcheck']
 
+
 " -----------------
 " Coc Configs
 " -----------------
-" Add `:Format` command to format current buffer.
-let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml' ]
+ "Add `:Format` command to format current buffer.
+let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi']
 command! -nargs=0 Format :call CocAction('format')
 
 function! s:check_back_space() abort
@@ -149,7 +172,7 @@ syntax enable
 set number
 " remove whitespaces in diff
 set diffopt+=iwhite
-" show file stats
+"  show file stats
 set ruler
 " match paren
 let loaded_matchparen = 1
@@ -173,7 +196,7 @@ set noerrorbells
 "Undo stack over swap files
 set noswapfile
 set nobackup
-set undodir=~/.vim/undodir
+set undodir=~/.vim/undodir2
 set undofile
 " incremental search match as the regex is being typed
 set incsearch
@@ -200,7 +223,7 @@ au BufNewFile,BufRead *.py
     \ set textwidth=79 |
     \ set expandtab |
     \ set autoindent |
-    \ set fileformat=dos
+    \ set fileformat=unix
 " Indentation for web files
 au BufNewFile,BufRead *.js, *.html, *.css
     \ set tabstop=2 |
@@ -225,9 +248,11 @@ set background=dark
 " Fuzzy find files
 nnoremap <c-p> :lua require("telescope.builtin").find_files()<CR>
 " Live Grep for strings
-nnoremap <leader>lg :lua require("telescope.builtin").live_grep()<CR>
+nnoremap <leader>gre :lua require("telescope.builtin").live_grep()<CR>
 " Find Strings
-nnoremap <leader>F :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+nnoremap <leader>f :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+" Find In curr di
+nnoremap <leader>fi :lua require('telescope.builtin').find_files{ search_dirs = { vim.fn.expand("%:p:h") ..  "/" .. vim.fn.expand("<cword>") } }<CR>
 " Help
 nnoremap <leader>H :lua require("telescope.builtin").help_tags()<CR>
 " List marks
@@ -238,10 +263,16 @@ nnoremap <leader>rnc :w! C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :so
 nnoremap <leader>enc :wincmd v<bar> :edit C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :wincmd =<CR>
 " Edit Powershell Core Profile
 nnoremap <leader>epcp :wincmd v<bar> :edit C:\Users\raranjan\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 <bar> :wincmd =<CR>
-" Show Buffers
+" Buffers
 nnoremap <leader>b <cmd>Telescope buffers<CR>
 " Show undo tree
 nnoremap <leader>u :UndotreeShow<CR>
+" Format Json File
+nnoremap <leader>fj :%!python -m json.tool <CR>
+" Open Notes
+nnoremap <leader>no :wincmd v <bar> :wincmd l <bar> :e ~/Notes.txt<CR>
+" Force reload file
+nnoremap <leader>re :e!<CR>
 " Cat File
 nnoremap <leader>cat :!type %<CR>
 " Create log json file
@@ -265,17 +296,21 @@ nnoremap <leader>- :vertical resize -10<CR>
 " File Explorer View
 nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 " Copy to system clipboard
-vnoremap <leader>c "+y
+nnoremap <leader>c "+y
 " Paste from system clipboard
 nnoremap <leader>v "+p
 vnoremap <leader>c "+y
 " Cleanup file and paste from system clipboard
 nnoremap <leader>V gg"+yG
+" Copy all lines in the current file to system clipboard
+nnoremap <leader>ya :1,$y
 " Delete selected visual block and paste content from _ register above it.
-vnoremap <leader>p "_dP
+vnoremap <leader>p d"_P
 "Save and Quit short remaps
 nnoremap <leader>w :w! <CR>
+nnoremap <leader>wa :wa! <CR>
 nnoremap <leader>wq :wq <CR>
+nnoremap <leader>wa :wa <CR>
 nnoremap <leader>Q :qa! <CR>
 nnoremap <leader>qa :qa! <CR>
 " Open powershell core terminal in horizontal split
@@ -316,7 +351,9 @@ if has('nvim')
 else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
-" Coc format file
-nnoremap <leader>ff :Format <CR>
+" Rename
+nmap <leader>rn <Plug>(coc-rename)
 " Coc list all diagnostic errors
 nnoremap <leader>ae :CocList diagnostics<CR>
+" Format file
+nnoremap <leader>ff :Format <CR>

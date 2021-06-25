@@ -224,7 +224,9 @@ nnoremap <c-p> :lua require("telescope.builtin").find_files()<CR>
 " Live Grep for strings
 nnoremap <leader>lg :lua require("telescope.builtin").live_grep()<CR>
 " Find Strings
-nnoremap <leader>F :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+nnoremap <leader>f :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+" Find In curr dir
+nnoremap <leader>fi :lua require('telescope.builtin').find_files{ search_dirs = { vim.fn.expand("%:p:h") ..  "/" .. vim.fn.expand("<cword>") } }<CR>
 " Help
 nnoremap <leader>H :lua require("telescope.builtin").help_tags()<CR>
 " List marks
