@@ -1,4 +1,5 @@
 call plug#begin('~/AppData/Local/nvim/plugged')
+Plug 'iCyMind/NeoSolarized'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
@@ -17,6 +18,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
+Plug 'ThePrimeagen/harpoon'
  "TODO Figure this out
 Plug 'neovim/nvim-lspconfig'
 "Plug 'hrsh7th/nvim-compe'
@@ -105,6 +107,68 @@ require'nvim-treesitter.configs'.setup {
 EOF
 
 " -----------------
+" Harpoon Configs
+" -----------------
+lua <<EOF
+require("harpoon").setup({
+    global_settings = {
+        save_on_toggle = false,
+        save_on_change = true,
+    },
+})
+EOF
+
+lua <<EOF
+local function harpoon_status()
+    local status = require("harpoon.mark").status()
+    if status == "" then
+        status = "N"
+    end
+    return string.format("H:%s", status)
+end
+EOF
+
+" -----------------
+" AutoComplete Configs
+" -----------------
+"set completeopt=menuone,noselect
+"lua <<EOF
+"require'compe'.setup {
+  "enabled = true;
+  "autocomplete = true;
+  "debug = false;
+  "min_length = 1;
+  "preselect = 'enable';
+  "throttle_time = 80;
+  "source_timeout = 200;
+  "resolve_timeout = 800;
+  "incomplete_delay = 400;
+  "max_abbr_width = 100;
+  "max_kind_width = 100;
+  "max_menu_width = 100;
+  "documentation = {
+    "border = "none", -- the border option is the same as `|help nvim_open_win|`
+    "winhighlight = "CompeDocumentation", -- highlight group used for the documentation window
+    "max_width = 120,
+    "min_width = 40,
+    "max_height = math.floor(vim.o.lines * 0.3),
+    "min_height = 1,
+  "};
+
+  "source = {
+    "path = true;
+    "buffer = true;
+    "calc = true;
+    "nvim_lsp = true;
+    "nvim_lua = true;
+    "vsnip = true;
+    "ultisnips = true;
+    "luasnip = true;
+  "};
+"}
+"EOF
+
+" -----------------
 " Syntastic Configs
 " -----------------
 set statusline+=%#warningmsg#
@@ -133,8 +197,8 @@ let g:syntastic_shell_checkers = ['shellcheck']
 " -----------------
 " Coc Configs
 " -----------------
- "Add `:Format` command to format current buffer.
-let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi']
+"Add `:Format` command to format current buffer.
+let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml', 'coc-omnisharp']
 command! -nargs=0 Format :call CocAction('format')
 
 function! s:check_back_space() abort
@@ -164,6 +228,10 @@ set shortmess+=A
 let python_highlight_all=1
 " set vimairline theme to simple
 let g:airline_theme = 'simple'
+" Enable powerline fonts
+let g:airline_powerline_fonts = 1
+" Enable tab line
+let g:airline#extensions#tabline#enabled = 1
 " set tree style view for netrw
 let g:netrw_liststyle=3
 " Enable syntax
@@ -257,6 +325,8 @@ nnoremap <leader>fi :lua require('telescope.builtin').find_files{ search_dirs = 
 nnoremap <leader>H :lua require("telescope.builtin").help_tags()<CR>
 " List marks
 nnoremap <leader>lm :lua require("telescope.builtin").marks()<CR>
+" Fix Windows Exception Carriage Returns
+nnoremap <leader>Fcr :%s/\\r\\n/\r/g <bar> :%s/\\"/"/g <bar> :%s/\\r\\\\n/\r/g <bar> :%s/\\\\/\//g <bar> %s/\/\//\//g <bar> :w <CR>
 " Refresh nvim config
 nnoremap <leader>rnc :w! C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :source C:\Users\raranjan\AppData\Local\nvim\init.vim<CR>
 " Edit nvim config
@@ -264,7 +334,7 @@ nnoremap <leader>enc :wincmd v<bar> :edit C:\Users\raranjan\AppData\Local\nvim\i
 " Edit Powershell Core Profile
 nnoremap <leader>epcp :wincmd v<bar> :edit C:\Users\raranjan\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 <bar> :wincmd =<CR>
 " Buffers
-nnoremap <leader>b <cmd>Telescope buffers<CR>
+nnoremap <leader>b :Telescope Buffers<CR>
 " Show undo tree
 nnoremap <leader>u :UndotreeShow<CR>
 " Format Json File
@@ -296,10 +366,9 @@ nnoremap <leader>- :vertical resize -10<CR>
 " File Explorer View
 nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 " Copy to system clipboard
-nnoremap <leader>c "+y
+vnoremap <leader>c "+y
 " Paste from system clipboard
 nnoremap <leader>v "+p
-vnoremap <leader>c "+y
 " Cleanup file and paste from system clipboard
 nnoremap <leader>V gg"+yG
 " Copy all lines in the current file to system clipboard
@@ -317,6 +386,9 @@ nnoremap <leader>qa :qa! <CR>
 nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh <CR>
 " Clear search highlight
 nnoremap <leader><space> :noh<CR>
+" Harpoon settings
+nnoremap <leader>m :lua require("harpoon.mark").add_file()<CR>
+nnoremap <leader>n :lua require("harpoon.ui").toggle_quick_menu()<CR>
 "Git Stuff
 nnoremap <leader>gs :G<CR>
 nnoremap <leader>gl :G log<CR>
@@ -324,19 +396,32 @@ nnoremap <leader>gj :diffget //3<CR>
 nnoremap <leader>gf :diffget //2<CR>
 nnoremap <leader>gd :Gdiffsplit <bar> :wincmd = <bar> :resize +20<CR>
 nnoremap <leader>gc :G commit <bar> :wincmd = <CR>
-nnoremap <leader>gp :G push <CR>
+nnoremap <leader>gp :G -c push.default=current push <CR>
 nnoremap <leader>gP :G pull <CR>
 nnoremap <leader>gS :G stash<CR>
 nnoremap <leader>gSl :lua require("telescope.builtin").git_stash()<CR>
 nnoremap <leader>gb :lua require("telescope.builtin").git_branches()<CR>
+nnoremap <leader>gCl :lua require("telescope.builtin").git_commits()<CR>
 nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gcm :G reset --hard <bar> :G checkout master <bar>:G remote prune origin <bar> :G pull origin master<CR>
 "Syntax Check
 nnoremap <leader>sc :SyntasticCheck<CR>
 "Whitespace Fixes
 nnoremap <leader>rw :StripWhitespace<CR>
+" AutoComplete things
+"inoremap <silent><expr> <TAB> compe#complete()
+"inoremap <silent><expr> <CR>      compe#confirm('<CR>')
+"inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+"inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+"inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 " Coc stuff
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+nnoremap <silent>K :call <SID>show_documentation()<CR>
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
