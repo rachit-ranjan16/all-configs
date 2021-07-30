@@ -369,6 +369,15 @@ nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 vnoremap <leader>c "+y
 " Paste from system clipboard
 nnoremap <leader>v "+p
+" Yank to end of line
+nnoremap Y y$
+" Keep the cursor centered
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J mzJ`z
+" Move lines around in visual mode
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 " Cleanup file and paste from system clipboard
 nnoremap <leader>V gg"+yG
 " Copy all lines in the current file to system clipboard
