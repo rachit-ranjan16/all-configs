@@ -10,8 +10,6 @@ Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-vinegar'
 Plug 'https://github.com/PProvost/vim-ps1.git'
 Plug 'sheerun/vim-polyglot'
-Plug 'davidhalter/jedi-vim'
-Plug 'vuciv/vim-bujo'
 Plug 'jremmen/vim-ripgrep'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -19,10 +17,7 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 Plug 'ThePrimeagen/harpoon'
- "TODO Figure this out
 Plug 'neovim/nvim-lspconfig'
-"Plug 'hrsh7th/nvim-compe'
-"Plug 'glepnir/lspsaga.nvim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'unblevable/quick-scope'
@@ -42,53 +37,32 @@ call plug#end()
 " -----------------
 lua <<EOF
 require('telescope').setup {
-  defaults = {
-    vimgrep_arguments = {
-      'rg',
-      '--color=never',
-      '--no-heading',
-      '--with-filename',
-      '--line-number',
-      '--column',
-      '--smart-case'
+    defaults = {
+        file_sorter = require("telescope.sorters").get_fzy_sorter,
+        prompt_prefix = " >",
+        color_devicons = true,
+        file_previewer = require("telescope.previewers").vim_buffer_cat.new,
+        grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
+        qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
+        layout_strategy = 'horizontal',
+        mappings = {
+            i = {
+                ["<C-q>"] = require("telescope.actions").smart_send_to_qflist,
+            },
+            n = {
+                ["<C-q>"] = require("telescope.actions").smart_send_to_qflist,
+                ["<C-a>"] = require("telescope.actions").select_all,
+                ["<C-s>"] = require("telescope.actions").toggle_selection,
+                ["<C-d>"] = require("telescope.actions").drop_all,
+            },
+        }
     },
-    prompt_position = "bottom",
-    prompt_prefix = "> ",
-    selection_caret = "> ",
-    entry_prefix = "  ",
-    initial_mode = "insert",
-    selection_strategy = "reset",
-    sorting_strategy = "descending",
-    layout_strategy = "vertical",
-    layout_defaults = {
-      horizontal = {
-        mirror = false,
-      },
-      vertical = {
-        mirror = false,
-      },
+    extensions = {
+        fzy_native = {
+            override_generic_sorter = false,
+            override_file_sorter = true,
+        },
     },
-    file_sorter =  require'telescope.sorters'.get_fzy_sorter,
-    file_ignore_patterns = {},
-    generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
-    shorten_path = true,
-    winblend = 0,
-    width = 0.75,
-    preview_cutoff = 120,
-    results_height = 1,
-    results_width = 0.8,
-    border = {},
-    borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
-    color_devicons = true,
-    use_less = true,
-    set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
-    file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
-    grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
-    qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
-
-    -- Developer configurations: Not meant for general override
-    buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
-  }
 }
 EOF
 
@@ -97,7 +71,8 @@ EOF
 " -----------------
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"rust" ,"python", "c_sharp", "comment", "java", "lua", "json",}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"rust" ,"python", "c_sharp", "comment", "java", "lua", "json","scala"},
+  -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   ignore_install = {}, -- List of parsers to ignore installing
   highlight = {
     enable = true,              -- false will disable the whole extension
@@ -323,6 +298,10 @@ nnoremap <leader>f :lua require("telescope.builtin").grep_string({ search = vim.
 nnoremap <leader>fi :lua require('telescope.builtin').find_files{ search_dirs = { vim.fn.expand("%:p:h") ..  "/" .. vim.fn.expand("<cword>") } }<CR>
 " Help
 nnoremap <leader>H :lua require("telescope.builtin").help_tags()<CR>
+" Quick Fix List
+nnoremap <leader>qf :copen<CR>
+nnoremap <leader>x :cnext<CR>
+nnoremap <leader>z :cprev<CR>
 " List marks
 nnoremap <leader>lm :lua require("telescope.builtin").marks()<CR>
 " Fix Windows Exception Carriage Returns
@@ -332,9 +311,11 @@ nnoremap <leader>rnc :w! C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :so
 " Edit nvim config
 nnoremap <leader>enc :wincmd v<bar> :edit C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :wincmd =<CR>
 " Edit Powershell Core Profile
-nnoremap <leader>epcp :wincmd v<bar> :edit C:\Users\raranjan\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 <bar> :wincmd =<CR>
+nnoremap <leader>epcp :wincmd v<bar> :edit E:\OneDrive\OneDrive - Microsoft\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 <bar> :wincmd =<CR>
+" Convert tsv to csv
+nnoremap <leader>tc :%s/\t/,/g<CR>
 " Buffers
-nnoremap <leader>b :Telescope Buffers<CR>
+nnoremap <leader>B :Telescope buffers<CR>
 " Show undo tree
 nnoremap <leader>u :UndotreeShow<CR>
 " Format Json File
@@ -343,8 +324,8 @@ nnoremap <leader>fj :%!python -m json.tool <CR>
 nnoremap <leader>no :wincmd v <bar> :wincmd l <bar> :e ~/Notes.txt<CR>
 " Force reload file
 nnoremap <leader>re :e!<CR>
-" Cat File
-nnoremap <leader>cat :!type %<CR>
+" Bat File
+nnoremap <leader>cat :!bat %<CR>
 " Create log json file
 nnoremap <leader>logj :wincmd v <bar> :wincmd l <bar> :e E:\Logs\someLog.json <bar> :1,$d <CR>
 " Delete all lines in the current file.
@@ -407,6 +388,7 @@ nnoremap <leader>gd :Gdiffsplit <bar> :wincmd = <bar> :resize +20<CR>
 nnoremap <leader>gc :G commit <bar> :wincmd = <CR>
 nnoremap <leader>gp :G -c push.default=current push <CR>
 nnoremap <leader>gP :G pull <CR>
+nnoremap <leader>gwp :wq <bar>:G -c push.default=current push<CR>
 nnoremap <leader>gS :G stash<CR>
 nnoremap <leader>gSl :lua require("telescope.builtin").git_stash()<CR>
 nnoremap <leader>gb :lua require("telescope.builtin").git_branches()<CR>
@@ -424,10 +406,10 @@ nnoremap <leader>rw :StripWhitespace<CR>
 "inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 "inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 " Coc stuff
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+nmap <silent>gd <Plug>(coc-definition)
+nmap <silent>gy <Plug>(coc-type-definition)
+nmap <silent>gi <Plug>(coc-implementation)
+nmap <silent>gr <Plug>(coc-references)
 " Add `:Fold` command to fold current buffer.
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 nnoremap <silent>K :call <SID>show_documentation()<CR>
