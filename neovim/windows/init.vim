@@ -1,3 +1,4 @@
+
 call plug#begin('~/AppData/Local/nvim/plugged')
 Plug 'iCyMind/NeoSolarized'
 Plug 'vim-airline/vim-airline'
@@ -17,6 +18,7 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 Plug 'ThePrimeagen/harpoon'
+Plug 'ThePrimeagen/git-worktree.nvim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'gruvbox-community/gruvbox'
 Plug 'ntpeters/vim-better-whitespace'
@@ -24,6 +26,8 @@ Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/nerdcommenter'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+Plug 'neomake/neomake'
 call plug#end()
 
 " -----------------
@@ -64,6 +68,7 @@ require('telescope').setup {
         },
     },
 }
+require("telescope").load_extension("git_worktree")
 EOF
 
 " -----------------
@@ -102,6 +107,20 @@ local function harpoon_status()
     return string.format("H:%s", status)
 end
 EOF
+"require("telescope").load_extension("harpoon")
+" -----------------
+" Git Worktree configs
+" -----------------
+lua <<EOF
+require("git-worktree").setup({
+    change_directory_command = "cd", -- default: "cd",
+    update_on_change = true,-- default: true,
+    update_on_change_command = "e .", -- default: "e .",
+    clearjumps_on_change = true, -- default: true,
+    autopush = false, -- default: false,
+})
+EOF
+
 
 " -----------------
 " Syntastic Configs
@@ -110,11 +129,12 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%F
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
-" -----------------
+
+"-----------------
 " Quickscope Configs
 " -----------------
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
@@ -133,7 +153,7 @@ let g:syntastic_shell_checkers = ['shellcheck']
 " Coc Configs
 " -----------------
 "Add `:Format` command to format current buffer.
-let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml', 'coc-omnisharp']
+let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml', 'coc-omnisharp', 'coc-metals', 'coc-sql', 'coc-prettier']
 command! -nargs=0 Format :call CocAction('format')
 
 function! s:check_back_space() abort
@@ -254,18 +274,23 @@ nnoremap <c-p> :lua require("telescope.builtin").find_files()<CR>
 nnoremap <leader>gre :lua require("telescope.builtin").live_grep()<CR>
 " Find Strings
 nnoremap <leader>f :lua require("telescope.builtin").grep_string({ search = vim.fn.input("Grep For > ")})<CR>
-" Find In curr di
+" Find all references to word under the cursor
+nnoremap <leader>fw :lua require("telescope.builtin").grep_string({ search = vim.fn.expand("<cword>")})<CR>
+" Find In curr directory
 nnoremap <leader>fi :lua require('telescope.builtin').find_files{ search_dirs = { vim.fn.expand("%:p:h") ..  "/" .. vim.fn.expand("<cword>") } }<CR>
+" Find in file from visual mode
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 " Help
 nnoremap <leader>H :lua require("telescope.builtin").help_tags()<CR>
+" Syntastic Errors
+nnoremap <leader>sn :lnext<CR>
+nnoremap <leader>sp :lprev<CR>
 " Quick Fix List
 nnoremap <leader>qf :copen<CR>
 nnoremap <leader>x :cnext<CR>
 nnoremap <leader>z :cprev<CR>
 " List marks
 nnoremap <leader>lm :lua require("telescope.builtin").marks()<CR>
-" Fix Windows Exception Carriage Returns
-nnoremap <leader>Fcr :%s/\\r\\n/\r/g <bar> :%s/\\"/"/g <bar> :%s/\\r\\\\n/\r/g <bar> :%s/\\\\/\//g <bar> %s/\/\//\//g <bar> :w <CR>
 " Refresh nvim config
 nnoremap <leader>rnc :w! C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :source C:\Users\raranjan\AppData\Local\nvim\init.vim<CR>
 " Edit nvim config
@@ -276,11 +301,27 @@ nnoremap <leader>epcp :wincmd v<bar> :edit E:\OneDrive\OneDrive - Microsoft\Docu
 nnoremap <leader>tc :%s/\t/,/g<CR>
 " Buffers
 nnoremap <leader>B :Telescope buffers<CR>
+nnoremap <leader>bn :bn<CR>
+nnoremap <leader>bp :bp<CR>
+nnoremap <leader>bd :bd<CR>
 " Show undo tree
 nnoremap <leader>u :UndotreeShow<CR>
+" --------------------------------------
+" Formatting
+" --------------------------------------
 " Format Json File
 nnoremap <leader>fj :%!python -m json.tool <CR>
+" Fix Windows Exception Carriage Returns
+nnoremap <leader>fcr :%s/\\r\\n/\r/g <bar> :%s/\\"/"/g <bar> :%s/\\r\\\\n/\r/g <bar> :%s/\\\\/\//g <bar> %s/\/\//\//g <bar> :noh <bar> :w <CR>
+" Fix quote escapes
+nnoremap <leader>feq :%s/\\"/"/g<bar> :noh <CR>
+" Expand one liner list to line separated values
+nnoremap <leader>FL :%s/\[//g <bar> :%s/\]//g <bar> :%s/\,/\r/g <bar> :%s/\\\\/\//g <bar> :StripWhitespace <bar> :noh <CR>
+" Format single line list to separate lines
+nnoremap <leader>CL :%s/\,/\,\r/g<bar> :%s/\ //g <bar>:StripWhitespace <bar> :noh <CR>
+" --------------------------------------
 " Open Notes
+" --------------------------------------
 nnoremap <leader>no :wincmd v <bar> :wincmd l <bar> :e ~/Notes.txt<CR>
 " Force reload file
 nnoremap <leader>re :e!<CR>
@@ -290,10 +331,6 @@ nnoremap <leader>cat :!bat %<CR>
 nnoremap <leader>logj :wincmd v <bar> :wincmd l <bar> :e E:\Logs\someLog.json <bar> :1,$d <CR>
 " Delete all lines in the current file.
 nnoremap <leader>dL :1,$d <CR>
-" Buffer Stuff
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>bn :bnext<CR>
-nnoremap <leader>bp :bprev<CR>
 " Window Stuff
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
@@ -306,6 +343,10 @@ nnoremap <leader>+ :vertical resize +10<CR>
 nnoremap <leader>- :vertical resize -10<CR>
 " File Explorer View
 nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
+" Paste from system clipboard w/o formatting, copy back to system cipboard
+nnoremap <leader>cf "+p0"+yydd
+" Paste last yanked word
+nnoremap <leader>vw "0P
 " Copy to system clipboard
 vnoremap <leader>c "+y
 " Paste from system clipboard
@@ -320,9 +361,9 @@ nnoremap J mzJ`z
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 " Cleanup file and paste from system clipboard
-nnoremap <leader>V gg"+yG
+nnoremap <leader>V gg"+yG<CR>
 " Copy all lines in the current file to system clipboard
-nnoremap <leader>ya :1,$y
+nnoremap <leader>ya gg0"+yG<CR>
 " Delete selected visual block and paste content from _ register above it.
 vnoremap <leader>p d"_P
 "Save and Quit short remaps
@@ -339,6 +380,11 @@ nnoremap <leader><space> :noh<CR>
 " Harpoon settings
 nnoremap <leader>m :lua require("harpoon.mark").add_file()<CR>
 nnoremap <leader>n :lua require("harpoon.ui").toggle_quick_menu()<CR>
+nnoremap <leader>1 :lua require("harpoon.ui").nav_file(1)<CR>
+nnoremap <leader>2 :lua require("harpoon.ui").nav_file(2)<CR>
+nnoremap <leader>3 :lua require("harpoon.ui").nav_file(3)<CR>
+nnoremap <leader>4 :lua require("harpoon.ui").nav_file(4)<CR>
+nnoremap <leader>5 :lua require("harpoon.ui").nav_file(5)<CR>
 "Git Stuff
 nnoremap <leader>gs :G<CR>
 nnoremap <leader>gl :G log<CR>
@@ -355,6 +401,8 @@ nnoremap <leader>gb :lua require("telescope.builtin").git_branches()<CR>
 nnoremap <leader>gCl :lua require("telescope.builtin").git_commits()<CR>
 nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gcm :G reset --hard <bar> :G checkout master <bar>:G remote prune origin <bar> :G pull origin master<CR>
+nnoremap <leader>gpom :G pull origin master<CR>
+nnoremap <leader>gw :lua require('telescope').extensions.git_worktree.git_worktrees()<CR>
 "Syntax Check
 nnoremap <leader>sc :SyntasticCheck<CR>
 "Whitespace Fixes
@@ -364,6 +412,8 @@ nmap <silent>gd <Plug>(coc-definition)
 nmap <silent>gy <Plug>(coc-type-definition)
 nmap <silent>gi <Plug>(coc-implementation)
 nmap <silent>gr <Plug>(coc-references)
+" Config json file with comments
+autocmd FileType json syntax match Comment +\/\/.\+$+
 " Add `:Fold` command to fold current buffer.
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 nnoremap <silent>K :call <SID>show_documentation()<CR>
@@ -387,3 +437,5 @@ nmap <leader>rn <Plug>(coc-rename)
 nnoremap <leader>ae :CocList diagnostics<CR>
 " Format file
 nnoremap <leader>ff :Format <CR>
+" Format file
+nnoremap <leader>F =ap<CR>
