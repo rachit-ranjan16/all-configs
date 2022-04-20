@@ -20,6 +20,8 @@ Plug 'ThePrimeagen/harpoon'
 Plug 'ThePrimeagen/git-worktree.nvim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'gruvbox-community/gruvbox'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+Plug 'shaunsingh/nord.nvim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
@@ -152,7 +154,7 @@ let g:syntastic_shell_checkers = ['shellcheck']
 " Coc Configs
 " -----------------
 "Add `:Format` command to format current buffer.
-let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml', 'coc-omnisharp', 'coc-metals', 'coc-sql', 'coc-prettier']
+let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml', 'coc-metals', 'coc-sql', 'coc-prettier']
 command! -nargs=0 Format :call CocAction('format')
 
 function! s:check_back_space() abort
@@ -258,8 +260,28 @@ set relativenumber
 set nu
 " Netrw open in vertical split
 let g:netrw_altv=1
-" set colorschene to onedark
-colorscheme gruvbox
+" Colorscheme Settings
+" Nord configs
+let g:nord_contrast = v:true
+let g:nord_borders = v:false
+let g:nord_disable_background = v:false
+let g:nord_italic = v:false
+"colorscheme nord
+
+" tokyonight configs
+let g:tokyonight_style = "night"
+let g:tokyonight_italic_functions = 1
+let g:tokyonight_sidebars = [ "qf", "vista_kind", "terminal", "packer" ]
+
+" Change the "hint" color to the "orange" color, and make the "error" color bright red
+let g:tokyonight_colors = {
+  \ 'hint': 'orange',
+  \ 'error': '#ff0000'
+\ }
+
+" Load the colorscheme
+colorscheme tokyonight
+"colorscheme gruvbox
 set background=dark
 
 
@@ -293,9 +315,9 @@ nnoremap <leader>z :cprev<CR>
 " List marks
 nnoremap <leader>lm :lua require("telescope.builtin").marks()<CR>
 " Refresh nvim config
-nnoremap <leader>rnc :w! C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :source C:\Users\raranjan\AppData\Local\nvim\init.vim<CR>
+nnoremap <leader>rnc :w! ~/.config/nvim/init.vim<bar> :source ~/.config/nvim/init.vim<CR>
 " Edit nvim config
-nnoremap <leader>enc :wincmd v<bar> :edit C:\Users\raranjan\AppData\Local\nvim\init.vim <bar> :wincmd =<CR>
+nnoremap <leader>enc :wincmd v<bar> :edit ~/.config/nvim/init.vim<bar> :wincmd =<CR>
 " Edit Powershell Core Profile
 nnoremap <leader>epcp :wincmd v<bar> :edit E:\OneDrive\OneDrive - Microsoft\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 <bar> :wincmd =<CR>
 " Convert tsv to csv
@@ -375,7 +397,7 @@ nnoremap <leader>wa :wa <CR>
 nnoremap <leader>Q :qa! <CR>
 nnoremap <leader>qa :qa! <CR>
 " Open powershell core terminal in horizontal split
-nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh <CR>
+nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal fish <CR>
 " Clear search highlight
 nnoremap <leader><space> :noh<CR>
 " Harpoon settings
@@ -395,7 +417,7 @@ nnoremap <leader>gd :Gdiffsplit <bar> :wincmd = <bar> :resize +20<CR>
 nnoremap <leader>gc :G commit <bar> :wincmd = <CR>
 nnoremap <leader>gp :G -c push.default=current push <CR>
 nnoremap <leader>gP :G pull <CR>
-nnoremap <leader>gwp :wq <bar>:G -c push.default=current push<CR>
+nnoremap <leader>gwp :wq<bar>:G -c push.default=current push<CR>
 nnoremap <leader>gS :G stash<CR>
 nnoremap <leader>gSl :lua require("telescope.builtin").git_stash()<CR>
 nnoremap <leader>gb :lua require("telescope.builtin").git_branches()<CR>
