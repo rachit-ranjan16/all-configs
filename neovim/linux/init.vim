@@ -417,7 +417,7 @@ nnoremap <leader>gd :Gdiffsplit <bar> :wincmd = <bar> :resize +20<CR>
 nnoremap <leader>gc :G commit <bar> :wincmd = <CR>
 nnoremap <leader>gp :G -c push.default=current push <CR>
 nnoremap <leader>gP :G pull <CR>
-nnoremap <leader>gwp :wq<bar>:G -c push.default=current push<CR>
+nnoremap <leader>gwp :wq<bar><CR>:G -c push.default=current push<CR>
 nnoremap <leader>gS :G stash<CR>
 nnoremap <leader>gSl :lua require("telescope.builtin").git_stash()<CR>
 nnoremap <leader>gb :lua require("telescope.builtin").git_branches()<CR>
