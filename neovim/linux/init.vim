@@ -1,3 +1,4 @@
+
 call plug#begin(expand('~/.config/nvim/plugged'))
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -8,7 +9,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-vinegar'
 Plug 'sheerun/vim-polyglot'
-Plug 'davidhalter/jedi-vim'
+"Plug 'davidhalter/jedi-vim'
 Plug 'vuciv/vim-bujo'
 Plug 'jremmen/vim-ripgrep'
 Plug 'nvim-lua/popup.nvim'
@@ -154,7 +155,7 @@ let g:syntastic_shell_checkers = ['shellcheck']
 " Coc Configs
 " -----------------
 "Add `:Format` command to format current buffer.
-let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml', 'coc-metals', 'coc-sql', 'coc-prettier']
+let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-pyright', 'coc-xml', 'coc-metals', 'coc-sql', 'coc-prettier',  'coc-docker', 'coc-yaml']
 command! -nargs=0 Format :call CocAction('format')
 
 function! s:check_back_space() abort
@@ -342,6 +343,8 @@ nnoremap <leader>feq :%s/\\"/"/g<bar> :noh <CR>
 nnoremap <leader>FL :%s/\[//g <bar> :%s/\]//g <bar> :%s/\,/\r/g <bar> :%s/\\\\/\//g <bar> :StripWhitespace <bar> :noh <CR>
 " Format single line list to separate lines
 nnoremap <leader>CL :%s/\,/\,\r/g<bar> :%s/\ //g <bar>:StripWhitespace <bar> :noh <CR>
+" Format file using language server
+nnoremap <leader>ff :Format<CR>
 " --------------------------------------
 " Open Notes
 " --------------------------------------
@@ -361,6 +364,8 @@ nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>q :wincmd q<CR>
 nnoremap <leader>o :wincmd o<CR>
+" Open Definition in a parallel window
+nmap <silent> gv :vsp<CR><Plug>(coc-definition)<C-W>L <CR>
 " Vertical resizes
 nnoremap <leader>+ :vertical resize +10<CR>
 nnoremap <leader>- :vertical resize -10<CR>
@@ -458,7 +463,3 @@ endif
 nmap <leader>rn <Plug>(coc-rename)
 " Coc list all diagnostic errors
 nnoremap <leader>ae :CocList diagnostics<CR>
-" Format file
-nnoremap <leader>ff :Format <CR>
-" Format file
-nnoremap <leader>F =ap<CR>

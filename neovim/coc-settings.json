@@ -1,20 +1,8 @@
 {
-    "diagnostic.checkCurrentLine": true,
-    "jedi.enable": true,
-    "jedi.startupMessage": false,
-    "jedi.markupKindPreferred": "plaintext",
-    "jedi.trace.server": "off",
-    "jedi.jediSettings.autoImportModules": [
-        "numpy",
-        "pandas"
-    ],
-    "jedi.executable.command": "jedi-language-server",
-    "jedi.executable.args": [],
-    "jedi.completion.disableSnippets": false,
-    "jedi.completion.resolveEagerly": false,
-    "jedi.diagnostics.enable": true,
-    "jedi.diagnostics.didOpen": true,
-    "jedi.diagnostics.didChange": true,
-    "jedi.diagnostics.didSave": true,
-    "jedi.workspace.extraPaths": []
+  "diagnostic.checkCurrentLine": true,
+  "coc.preferences.formatOnSaveFiletypes": ["py", "yaml", "json"],
+  "pyright.enable": true,
+  "python.venvPath": "~/.envs/",
+  "python.linting.flake8Enabled": true,
+  "python.formatting.provider": "black"
 }
