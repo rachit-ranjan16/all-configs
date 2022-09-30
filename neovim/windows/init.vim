@@ -1,4 +1,5 @@
 
+
 call plug#begin(expand('~/AppData/Local/nvim/plugged'))
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -296,6 +297,7 @@ let g:tokyonight_colors = {
 colorscheme tokyonight
 "colorscheme gruvbox
 set background=dark
+highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 
 
 " -----------------
@@ -385,12 +387,16 @@ nnoremap <leader>- :vertical resize -10<CR>
 nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 " Paste from system clipboard w/o formatting, copy back to system cipboard
 nnoremap <leader>cf "+p0"+yydd
+" Yank word from anywhere
+nnoremap <leader>yw yiw
 " Paste last yanked word
 nnoremap <leader>vw "0P
 " Copy to system clipboard
 vnoremap <leader>c "+y
 " Paste from system clipboard
 nnoremap <leader>v "+p
+" Delete selected visual block and paste content from _ register before it.
+vnoremap <leader>p "_dP
 " Yank to end of line
 nnoremap Y y$
 " Keep the cursor centered
@@ -404,8 +410,6 @@ vnoremap K :m '<-2<CR>gv=gv
 nnoremap <leader>V gg"+yG<CR>
 " Copy all lines in the current file to system clipboard
 nnoremap <leader>ya gg0"+yG<CR>
-" Delete selected visual block and paste content from _ register above it.
-vnoremap <leader>p d"_P
 "Save and Quit short remaps
 nnoremap <leader>w :w! <CR>
 nnoremap <leader>wa :wa! <CR>
@@ -425,6 +429,8 @@ nnoremap <leader>2 :lua require("harpoon.ui").nav_file(2)<CR>
 nnoremap <leader>3 :lua require("harpoon.ui").nav_file(3)<CR>
 nnoremap <leader>4 :lua require("harpoon.ui").nav_file(4)<CR>
 nnoremap <leader>5 :lua require("harpoon.ui").nav_file(5)<CR>
+nnoremap <leader>6 :lua require("harpoon.ui").nav_file(6)<CR>
+nnoremap <leader>7 :lua require("harpoon.ui").nav_file(7)<CR>
 "Git Stuff
 nnoremap <leader>gs :G<CR>
 nnoremap <leader>gl :G log<CR>
@@ -433,13 +439,12 @@ nnoremap <leader>gf :diffget //2<CR>
 nnoremap <leader>gd :Gdiffsplit <bar> :wincmd = <bar> :resize +20<CR>
 nnoremap <leader>gc :G commit <bar> :wincmd = <CR>
 nnoremap <leader>gp :G -c push.default=current push <CR>
-nnoremap <leader>gP :G pull <CR>
-nnoremap <leader>gwp :wq<bar>:G -c push.default=current push<CR>
+nnoremap <leader>gP :G fetch origin<bar>:G pull<CR>
+nnoremap <leader>gwp :wq<bar>:G -c push.default=current push<CR><CR>
 nnoremap <leader>gS :G stash<CR>
 nnoremap <leader>gSl :lua require("telescope.builtin").git_stash()<CR>
 nnoremap <leader>gb :lua require("telescope.builtin").git_branches()<CR>
 nnoremap <leader>gCl :lua require("telescope.builtin").git_commits()<CR>
-nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gcm :G reset --hard <bar> :G checkout master <bar>:G remote prune origin <bar> :G pull origin master<CR>
 nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gw :lua require('telescope').extensions.git_worktree.git_worktrees()<CR>
@@ -462,9 +467,7 @@ nmap <leader>rn <Plug>(coc-rename)
 nnoremap <leader>ae :CocList diagnostics<CR>
 " Vim Bujo remaps
 nnoremap <leader>gto :Todo g<CR>
-nnoremap <C-s> <Plug>BujoAddnormal
-inoremap <C-s> <Plug>BujoAddinsert
-nnoremap <C-Q> <Plug>BujoAddnormal
-inoremap <C-q> <Plug>BujoAddinsert
+nnoremap <C-Q> <Plug>BujoChecknormal
+inoremap <C-q> <Plug>BujoCheckinsert
 
 
