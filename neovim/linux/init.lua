@@ -1,0 +1,1 @@
+/Users/rachit/.config/nvim/init.lua
