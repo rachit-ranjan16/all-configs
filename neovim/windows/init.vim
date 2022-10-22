@@ -1,6 +1,6 @@
 
-call plug#begin('~/AppData/Local/nvim/plugged')
-Plug 'iCyMind/NeoSolarized'
+
+call plug#begin(expand('~/AppData/Local/nvim/plugged'))
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
@@ -9,8 +9,8 @@ Plug 'nvie/vim-flake8'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-vinegar'
-Plug 'https://github.com/PProvost/vim-ps1.git'
 Plug 'sheerun/vim-polyglot'
+Plug 'vuciv/vim-bujo'
 Plug 'jremmen/vim-ripgrep'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -20,7 +20,8 @@ Plug 'nvim-treesitter/playground'
 Plug 'ThePrimeagen/harpoon'
 Plug 'ThePrimeagen/git-worktree.nvim'
 Plug 'neovim/nvim-lspconfig'
-Plug 'gruvbox-community/gruvbox'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+Plug 'shaunsingh/nord.nvim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'unblevable/quick-scope'
 Plug 'mbbill/undotree'
@@ -40,8 +41,8 @@ call plug#end()
 " Telescope configs
 " -----------------
 lua <<EOF
-require('telescope').setup {
-    defaults = {
+require('telescope').setup{
+  defaults = {
         file_sorter = require("telescope.sorters").get_fzy_sorter,
         prompt_prefix = " >",
         color_devicons = true,
@@ -65,7 +66,7 @@ require('telescope').setup {
         fzy_native = {
             override_generic_sorter = false,
             override_file_sorter = true,
-        },
+      },
     },
 }
 require("telescope").load_extension("git_worktree")
@@ -153,13 +154,22 @@ let g:syntastic_shell_checkers = ['shellcheck']
 " Coc Configs
 " -----------------
 "Add `:Format` command to format current buffer.
-let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-jedi', 'coc-xml', 'coc-omnisharp', 'coc-metals', 'coc-sql', 'coc-prettier']
+let g:coc_global_extensions=[ 'coc-powershell', 'coc-json', 'coc-pyright', 'coc-xml', 'coc-metals', 'coc-sql', 'coc-prettier',  'coc-docker', 'coc-yaml', 'coc-snippets']
 command! -nargs=0 Format :call CocAction('format')
+
+inoremap <silent><expr> <TAB>
+  \ coc#pum#visible() ? coc#_select_confirm() :
+  \ coc#expandableOrJumpable() ?
+  \ "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ coc#refresh()
 
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+let g:coc_snippet_next = '<tab>'
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -172,8 +182,15 @@ function! s:show_documentation()
 endfunction
 
 " -----------------
-"  Vim Stuff
+" Vim Bujo Task Manager Stuff
 " -----------------
+let g:bujo#todo_file_path= "C:\\Users\\raranjan\\todo\\bujo"
+
+" -----------------
+" Vim Stuff
+" -----------------
+" map leader to space.
+let mapleader = " "
 let g:qs_max_chars=150
 " set encoding to utf8
 set encoding=utf-8
@@ -257,9 +274,30 @@ set relativenumber
 set nu
 " Netrw open in vertical split
 let g:netrw_altv=1
-" set colorschene to onedark
-colorscheme gruvbox
+" Colorscheme Settings
+" Nord configs
+let g:nord_contrast = v:true
+let g:nord_borders = v:false
+let g:nord_disable_background = v:false
+let g:nord_italic = v:false
+"colorscheme nord
+
+" tokyonight configs
+let g:tokyonight_style = "night"
+let g:tokyonight_italic_functions = 1
+let g:tokyonight_sidebars = [ "qf", "vista_kind", "terminal", "packer" ]
+
+" Change the "hint" color to the "orange" color, and make the "error" color bright red
+let g:tokyonight_colors = {
+  \ 'hint': 'orange',
+  \ 'error': '#ff0000'
+\ }
+
+" Load the colorscheme
+colorscheme tokyonight
+"colorscheme gruvbox
 set background=dark
+highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 
 
 " -----------------
@@ -319,6 +357,8 @@ nnoremap <leader>feq :%s/\\"/"/g<bar> :noh <CR>
 nnoremap <leader>FL :%s/\[//g <bar> :%s/\]//g <bar> :%s/\,/\r/g <bar> :%s/\\\\/\//g <bar> :StripWhitespace <bar> :noh <CR>
 " Format single line list to separate lines
 nnoremap <leader>CL :%s/\,/\,\r/g<bar> :%s/\ //g <bar>:StripWhitespace <bar> :noh <CR>
+" Format file using language server
+nnoremap <leader>ff :Format<CR>
 " --------------------------------------
 " Open Notes
 " --------------------------------------
@@ -338,6 +378,8 @@ nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>q :wincmd q<CR>
 nnoremap <leader>o :wincmd o<CR>
+" Open Definition in a parallel window
+nmap <silent> gv :vsp<CR><Plug>(coc-definition)<C-W>L <CR>
 " Vertical resizes
 nnoremap <leader>+ :vertical resize +10<CR>
 nnoremap <leader>- :vertical resize -10<CR>
@@ -345,12 +387,16 @@ nnoremap <leader>- :vertical resize -10<CR>
 nnoremap <leader>pv :Lex <bar> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 " Paste from system clipboard w/o formatting, copy back to system cipboard
 nnoremap <leader>cf "+p0"+yydd
+" Yank word from anywhere
+nnoremap <leader>yw yiw
 " Paste last yanked word
 nnoremap <leader>vw "0P
 " Copy to system clipboard
 vnoremap <leader>c "+y
 " Paste from system clipboard
 nnoremap <leader>v "+p
+" Delete selected visual block and paste content from _ register before it.
+vnoremap <leader>p "_dP
 " Yank to end of line
 nnoremap Y y$
 " Keep the cursor centered
@@ -364,8 +410,6 @@ vnoremap K :m '<-2<CR>gv=gv
 nnoremap <leader>V gg"+yG<CR>
 " Copy all lines in the current file to system clipboard
 nnoremap <leader>ya gg0"+yG<CR>
-" Delete selected visual block and paste content from _ register above it.
-vnoremap <leader>p d"_P
 "Save and Quit short remaps
 nnoremap <leader>w :w! <CR>
 nnoremap <leader>wa :wa! <CR>
@@ -385,6 +429,8 @@ nnoremap <leader>2 :lua require("harpoon.ui").nav_file(2)<CR>
 nnoremap <leader>3 :lua require("harpoon.ui").nav_file(3)<CR>
 nnoremap <leader>4 :lua require("harpoon.ui").nav_file(4)<CR>
 nnoremap <leader>5 :lua require("harpoon.ui").nav_file(5)<CR>
+nnoremap <leader>6 :lua require("harpoon.ui").nav_file(6)<CR>
+nnoremap <leader>7 :lua require("harpoon.ui").nav_file(7)<CR>
 "Git Stuff
 nnoremap <leader>gs :G<CR>
 nnoremap <leader>gl :G log<CR>
@@ -393,13 +439,12 @@ nnoremap <leader>gf :diffget //2<CR>
 nnoremap <leader>gd :Gdiffsplit <bar> :wincmd = <bar> :resize +20<CR>
 nnoremap <leader>gc :G commit <bar> :wincmd = <CR>
 nnoremap <leader>gp :G -c push.default=current push <CR>
-nnoremap <leader>gP :G pull <CR>
-nnoremap <leader>gwp :wq <bar>:G -c push.default=current push<CR>
+nnoremap <leader>gP :G fetch origin<bar>:G pull<CR>
+nnoremap <leader>gwp :wq<bar>:G -c push.default=current push<CR><CR>
 nnoremap <leader>gS :G stash<CR>
 nnoremap <leader>gSl :lua require("telescope.builtin").git_stash()<CR>
 nnoremap <leader>gb :lua require("telescope.builtin").git_branches()<CR>
 nnoremap <leader>gCl :lua require("telescope.builtin").git_commits()<CR>
-nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gcm :G reset --hard <bar> :G checkout master <bar>:G remote prune origin <bar> :G pull origin master<CR>
 nnoremap <leader>gpom :G pull origin master<CR>
 nnoremap <leader>gw :lua require('telescope').extensions.git_worktree.git_worktrees()<CR>
@@ -407,7 +452,7 @@ nnoremap <leader>gw :lua require('telescope').extensions.git_worktree.git_worktr
 nnoremap <leader>sc :SyntasticCheck<CR>
 "Whitespace Fixes
 nnoremap <leader>rw :StripWhitespace<CR>
-" Coc stuff
+" Coc Remaps
 nmap <silent>gd <Plug>(coc-definition)
 nmap <silent>gy <Plug>(coc-type-definition)
 nmap <silent>gi <Plug>(coc-implementation)
@@ -417,25 +462,12 @@ autocmd FileType json syntax match Comment +\/\/.\+$+
 " Add `:Fold` command to fold current buffer.
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 nnoremap <silent>K :call <SID>show_documentation()<CR>
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-" Rename
 nmap <leader>rn <Plug>(coc-rename)
 " Coc list all diagnostic errors
 nnoremap <leader>ae :CocList diagnostics<CR>
-" Format file
-nnoremap <leader>ff :Format <CR>
-" Format file
-nnoremap <leader>F =ap<CR>
+" Vim Bujo remaps
+nnoremap <leader>gto :Todo g<CR>
+nnoremap <C-Q> <Plug>BujoChecknormal
+inoremap <C-q> <Plug>BujoCheckinsert
+
+
