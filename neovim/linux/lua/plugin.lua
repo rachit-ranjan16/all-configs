@@ -18,8 +18,6 @@ return require('packer').startup(function(use)
   use 'unblevable/quick-scope'
   use 'mbbill/undotree'
   use 'preservim/nerdcommenter'
--- TODO find a version that works or remove this entirely
- -- use {'iamcco/markdown-preview.nvim', run='cd app && yarn install', cmd = 'MarkdownPreview' }
   use 'neomake/neomake'
   use {
     'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' },

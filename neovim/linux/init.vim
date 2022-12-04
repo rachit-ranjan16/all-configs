@@ -1,4 +1,3 @@
-
 call plug#begin(expand('~/.config/nvim/plugged'))
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -402,6 +401,7 @@ nnoremap <leader>Q :qa! <CR>
 nnoremap <leader>qa :qa! <CR>
 " Open powershell core terminal in horizontal split
 nnoremap <leader>t :wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal fish <CR>
+nnoremap <leader>vt :wincmd v <bar> :wincmd l <bar> :vertical resize -10<bar> :terminal fish <CR>
 " Clear search highlight
 nnoremap <leader><space> :noh<CR>
 " Harpoon settings
