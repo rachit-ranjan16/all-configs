@@ -315,7 +315,8 @@ vim.keymap.set('n', '<leader>epcp',
   ":wincmd v <bar>:e E:\\OneDrive\\OneDrive - Microsoft\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1<bar> :wincmd =<CR>"
   , { desc = '[E]dit [P]owershell [C]onfig [P]rofile', noremap = true })
 -- Convert tsv to csv
-vim.keymap.set('n', '<leader>tc', ':%s/\t/,/g<CR>', { desc = 'Covert [T]SV to [C]SV', noremap = true })
+vim.keymap.set('n', '<leader>ctc', ':%s/\t/,/g<CR>', { desc = '[C]overt [T]SV to [C]SV', noremap = true })
+-- Show undo tree
 vim.keymap.set('n', '<leader>u', ':UndotreeShow', { desc = '[U]ndo tree pane', noremap = true })
 -- Formatting helpers
 -- Fix Windows Exception Carriage Returns
