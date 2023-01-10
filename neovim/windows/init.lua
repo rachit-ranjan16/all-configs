@@ -41,7 +41,7 @@ require('packer').startup(function(use)
   }
 
   use 'github/copilot.vim'
-  use 'mbill/undotree'
+  use 'mbbill/undotree'
   -- Git related plugins
   use 'tpope/vim-fugitive'
   use 'tpope/vim-rhubarb'
@@ -53,12 +53,13 @@ require('packer').startup(function(use)
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
+  use 'ThePrimeagen/harpoon'
 
   -- Fuzzy Finder (files, lsp, etc)
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
 
   -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
-  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
+  -- use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
   -- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
   if has_plugins then
@@ -107,7 +108,10 @@ vim.o.mouse = 'a'
 vim.o.breakindent = true
 
 -- Save undo history
-vim.o.undofile = true
+-- vim.o.undofile = true
+--
+-- Set shortmess options
+vim.o.shortmess = vim.o.shortmess .. 'A'
 
 -- Case insensitive searching UNLESS /C or capital in search
 vim.o.ignorecase = true
@@ -123,6 +127,14 @@ vim.cmd [[colorscheme onedark]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
+
+-- Set relative numbers
+vim.o.relativenumber = true
+vim.o.nu = true
+
+-- Enable copilot
+vim.b.copilot_enabled = true
+vim.g.copilot_no_tab_map = true
 
 -- [[ Basic Keymaps ]]
 -- Set <space> as the leader key
@@ -208,6 +220,15 @@ require('telescope').setup {
 pcall(require('telescope').load_extension, 'fzf')
 
 ----------------------------
+-- Configure Harpoon
+----------------------------
+require("harpoon").setup({
+  global_settings = {
+    save_on_toggle = false,
+    save_on_change = true,
+  },
+})
+----------------------------
 -----Treesitter Configs----
 ----------------------------
 require('nvim-treesitter.configs').setup {
@@ -271,102 +292,6 @@ require('nvim-treesitter.configs').setup {
   },
 }
 
------------------------
-------- Remaps --------
------------------------
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = '[D]iagnostic [P]revious', noremap = true })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = '[D]iagnostic [N]ext', noremap = true })
-vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float, { desc = '[D]iagnostic [F]loat window', noremap = true })
-vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = '[D]iagnostic [Q]uickfix list', noremap = true })
--- Telescope remaps
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles,
-  { desc = '[?] Find recently opened files', noremap = true })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers,
-  { desc = '[ ] Find existing buffers', noremap = true })
-vim.keymap.set('n', '<leader>/', function()
-  -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-    winblend = 10,
-    previewer = false,
-  })
-end, { desc = '[/] Fuzzily search in current buffer]' })
-vim.keymap.set('n', '<c-p>', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles', noremap = true })
-vim.keymap.set('n', '<leader>H', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp', noremap = true })
-vim.keymap.set('n', '<leader>fw', require('telescope.builtin').grep_string,
-  { desc = '[S]earch current [W]ord', noremap = true })
-vim.keymap.set('n', '<leader>lg', require('telescope.builtin').live_grep, { desc = '[L]ive [G]rep', noremap = true })
-vim.keymap.set('n', '<leader>fd', require('telescope.builtin').diagnostics,
-  { desc = '[F]ind in [D]iagnostics', noremap = true })
--- Quickfix Remaps
-vim.keymap.set('n', '<leader>qf', ':copen<CR>', { desc = 'ne[X]t in Quickfix', noremap = true })
-vim.keymap.set('n', '<leader>x', ':cnext<CR>', { desc = ' in Quickfix', noremap = true })
-vim.keymap.set('n', '<leader>z', ':cprev<CR>', { desc = 'Previous in Quickfix', noremap = true })
--- List marks
-vim.keymap.set('n', '<leader>lm', ':cprev<CR>', { desc = '[L]ist [M]arks', noremap = true })
--- Save current buffer
-vim.keymap.set('n', '<leader>w', ':w!<CR>', { desc = 'Save File', noremap = true })
--- Refresh neovim config
-vim.keymap.set('n', '<leader>rnc',
-  ":w! C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua <bar> :source C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<CR>"
-  , { desc = '[R]efresh [N]vim [C]onfig', noremap = true })
--- Edit powershell config
-vim.keymap.set('n', '<leader>epcp',
-  ":wincmd v <bar>:e E:\\OneDrive\\OneDrive - Microsoft\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1<bar> :wincmd =<CR>"
-  , { desc = '[E]dit [P]owershell [C]onfig [P]rofile', noremap = true })
--- Convert tsv to csv
-vim.keymap.set('n', '<leader>tc', ':%s/\t/,/g<CR>', { desc = 'Covert [T]SV to [C]SV', noremap = true })
-vim.keymap.set('n', '<leader>u', ':UndotreeShow', { desc = '[U]ndo tree pane', noremap = true })
--- Formatting helpers
--- Fix Windows Exception Carriage Returns
-vim.keymap.set('n', '<leader>fcr',
-  ":%s/\\r\\n/\\r/g <bar> :%s/\\\\\"/\"/g <bar> :%s/\\r\\\\n/\\r/g <bar> :%s/\\\\/\\//g <bar> %s/\\/\\//\\//g <bar> :noh <bar> :w <CR>"
-  ,
-  { desc = '[F]ix [C]arriage [R]eturns', noremap = true })
--- Fix quote escapes
-vim.keymap.set('n', '<leader>feq', ":%s/\\\\\" / \\\"/g<bar> :noh <CR>", { desc = '[U]ndo tree pane', noremap = true })
--- Expand python one liner list to line separated values
-vim.keymap.set('n', '<leader>flp',
-  ":%s/\\[//g <bar> :%s/\\]//g <bar> :%s/\\,/\r/g <bar> :%s/\\\\/\\//g <bar> :StripWhitespace <bar> :noh <CR>",
-  { desc = '[F]ormat [L]ist in [P]ython format to newline separated values', noremap = true })
--- Format single line list to separate lines
-vim.keymap.set('n', '<leader>flc', ":%s/\\,/\\,\\r/g<bar> :%s/\\ /\\ /g <CR>",
-  { desc = '[F]ormat [L]ist in csv to newline separated values', noremap = true })
--- Open notes
-vim.keymap.set('n', '<leader>no', ' :wincmd v <bar> :wincmd l <bar> :e ~/Notes.txt<CR>',
-  { desc = '[O]pen [N]otes', noremap = true })
--- Force reload file
-vim.keymap.set('n', '<leader>re', ' :e!<CR>', { desc = '[R]eload file', noremap = true })
--- Create log json file
-vim.keymap.set('n', '<leader>logj', ":wincmd v <bar> :wincmd l <bar> :e E:\\Logs\\someLog.json <bar> :1,$d <CR>",
-  { desc = 'Create [LogJ]son file', noremap = true })
--- Delete all lines in the current file.
-vim.keymap.set('n', '<leader>dL', ':1,$d <CR>', { desc = '[D]elete all [L]ines in the current file', noremap = true })
--- Window Stuff
-vim.keymap.set('n', '<leader>h', ' :wincmd h<CR>', { desc = 'Move right', noremap = true })
-vim.keymap.set('n', '<leader>j', ' :wincmd j<CR>', { desc = 'Move down', noremap = true })
-vim.keymap.set('n', '<leader>k', ' :wincmd k<CR>', { desc = 'Move up', noremap = true })
-vim.keymap.set('n', '<leader>l', ' :wincmd l<CR>', { desc = 'Move left', noremap = true })
-vim.keymap.set('n', '<leader>q', ' :wincmd q<CR>', { desc = 'Quit current pane', noremap = true })
-vim.keymap.set('n', '<leader>o', ' :wincmd o<CR>', { desc = 'Close other panes', noremap = true })
--- Vertical resizes
-vim.keymap.set('n', '<leader>+', ' :vertical resize +10<CR>', { desc = 'Vertical resize ++', noremap = true })
-vim.keymap.set('n', '<leader>-', ' :vertical resize -10<CR>', { desc = 'Vertical resize --', noremap = true })
--- Paste from system clipboard w/o formatting, copy back to system cipboard
-vim.keymap.set('n', '<leader>crf', ' "+p0"+yydd', { desc = '[C]opy [R]emove [F]ormatting', noremap = true })
--- Yank word from anywhere
-vim.keymap.set('n', '<leader>yw', ' yiw', { desc = '[Y]ank [W]ord', noremap = true })
--- Paste last yanked word
-vim.keymap.set('n', '<leader>vw', ' "0P', { desc = 'Paste yanked [Word]', noremap = true })
--- Copy to system clipboard
-vim.keymap.set('n', '<leader>c', ' "+y', { desc = '[C]opy to system clipboard', noremap = true })
--- Paste from system clipboard
-vim.keymap.set('n', '<leader>v', ' "+p', { desc = 'Paste from system clipboard', noremap = true })
--- Move line above
-vim.keymap.set('n', 'J', ' mzJ`z', { desc = 'Move line above', noremap = true })
--- Move lines around in visual mode
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move highlighted line down', noremap = true })
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move highlighted line up', noremap = true })
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -386,9 +311,9 @@ local on_attach = function(_, bufnr)
   lsp_nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   lsp_nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
-  lsp_nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-  lsp_nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-  lsp_nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
+  lsp_nmap('Gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+  lsp_nmap('Gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+  lsp_nmap('GI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
   lsp_nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
   lsp_nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   lsp_nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
@@ -397,7 +322,7 @@ local on_attach = function(_, bufnr)
   lsp_nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   lsp_nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
   -- Lesser used LSP functionality
-  lsp_nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+  lsp_nmap('GD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
   lsp_nmap('<leader>waf', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
   lsp_nmap('<leader>wrf', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
   lsp_nmap('<leader>wlf', function()
@@ -428,7 +353,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'sumneko_lua', 'gopls', 'omnisharp' }
+local servers = { 'clangd', 'pyright', 'tsserver', 'sumneko_lua', 'omnisharp' }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -525,3 +450,161 @@ cmp.setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+-----------------------
+------- Remaps --------
+-----------------------
+-- Diagnostic keymaps
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = '[D]iagnostic [P]revious', noremap = true })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = '[D]iagnostic [N]ext', noremap = true })
+vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float, { desc = '[D]iagnostic [F]loat window', noremap = true })
+vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = '[D]iagnostic [Q]uickfix list', noremap = true })
+-- Telescope remaps
+vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles,
+  { desc = '[?] Find recently opened files', noremap = true })
+vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers,
+  { desc = '[ ] Find existing buffers', noremap = true })
+vim.keymap.set('n', '<leader>/', function()
+  -- You can pass additional configuration to telescope to change theme, layout, etc.
+  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+    winblend = 10,
+    previewer = false,
+  })
+end, { desc = '[/] Fuzzily search in current buffer]' })
+vim.keymap.set('n', '<c-p>', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles', noremap = true })
+vim.keymap.set('n', '<leader>H', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp', noremap = true })
+vim.keymap.set('n', '<leader>fw', require('telescope.builtin').grep_string,
+  { desc = '[S]earch current [W]ord', noremap = true })
+vim.keymap.set('n', '<leader>lg', require('telescope.builtin').live_grep, { desc = '[L]ive [G]rep', noremap = true })
+vim.keymap.set('n', '<leader>fd', require('telescope.builtin').diagnostics,
+  { desc = '[F]ind in [D]iagnostics', noremap = true })
+-- Quickfix Remaps
+vim.keymap.set('n', '<leader>qf', ':copen<CR>', { desc = 'ne[X]t in Quickfix', noremap = true })
+vim.keymap.set('n', '<leader>x', ':cnext<CR>', { desc = ' in Quickfix', noremap = true })
+vim.keymap.set('n', '<leader>z', ':cprev<CR>', { desc = 'Previous in Quickfix', noremap = true })
+-- List marks
+vim.keymap.set('n', '<leader>lm', ':cprev<CR>', { desc = '[L]ist [M]arks', noremap = true })
+-- Save current buffer
+vim.keymap.set('n', '<leader>w', ':w!<CR>', { desc = 'Save File', noremap = true })
+-- edit neovim config
+vim.keymap.set('n', '<leader>enc',
+  ":wincmd v <bar>:e C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<bar> :wincmd =<CR>"
+  , { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
+-- Refresh neovim config
+vim.keymap.set('n', '<leader>rnc',
+  ":w! C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua <bar> :source C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<CR>"
+  , { desc = '[R]efresh [N]vim [C]onfig', noremap = true })
+-- Edit powershell config
+vim.keymap.set('n', '<leader>epcp',
+  ":wincmd v <bar>:e E:\\OneDrive\\OneDrive - Microsoft\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1<bar> :wincmd =<CR>"
+  , { desc = '[E]dit [P]owershell [C]onfig [P]rofile', noremap = true })
+-- Convert tsv to csv
+vim.keymap.set('n', '<leader>tc', ':%s/\t/,/g<CR>', { desc = 'Covert [T]SV to [C]SV', noremap = true })
+vim.keymap.set('n', '<leader>u', ':UndotreeShow', { desc = '[U]ndo tree pane', noremap = true })
+-- Formatting helpers
+-- Fix Windows Exception Carriage Returns
+vim.keymap.set('n', '<leader>fcr',
+  ":%s/\\r\\n/\\r/g <bar> :%s/\\\\\"/\"/g <bar> :%s/\\r\\\\n/\\r/g <bar> :%s/\\\\/\\//g <bar> %s/\\/\\//\\//g <bar> :noh <bar> :w <CR>"
+  ,
+  { desc = '[F]ix [C]arriage [R]eturns', noremap = true })
+-- Fix quote escapes
+vim.keymap.set('n', '<leader>feq', ":%s/\\\\\" / \\\"/g<bar> :noh <CR>", { desc = '[U]ndo tree pane', noremap = true })
+-- Expand python one liner list to line separated values
+vim.keymap.set('n', '<leader>flp',
+  ":%s/\\[//g <bar> :%s/\\]//g <bar> :%s/\\,/\r/g <bar> :%s/\\\\/\\//g <bar> :StripWhitespace <bar> :noh <CR>",
+  { desc = '[F]ormat [L]ist in [P]ython format to newline separated values', noremap = true })
+-- Format single line list to separate lines
+vim.keymap.set('n', '<leader>flc', ":%s/\\,/\\,\\r/g<bar> :%s/\\ /\\ /g <CR>",
+  { desc = '[F]ormat [L]ist in csv to newline separated values', noremap = true })
+-- Open notes
+vim.keymap.set('n', '<leader>no', ' :wincmd v <bar> :wincmd l <bar> :e ~/Notes.txt<CR>',
+  { desc = '[O]pen [N]otes', noremap = true })
+-- Force reload file
+vim.keymap.set('n', '<leader>re', ' :e!<CR>', { desc = '[R]eload file', noremap = true })
+-- Create log json file
+vim.keymap.set('n', '<leader>logj', ":wincmd v <bar> :wincmd l <bar> :e E:\\Logs\\someLog.json <bar> :1,$d <CR>",
+  { desc = 'Create [LogJ]son file', noremap = true })
+-- Delete all lines in the current file.
+vim.keymap.set('n', '<leader>dL', ':1,$d <CR>', { desc = '[D]elete all [L]ines in the current file', noremap = true })
+-- Window Stuff
+vim.keymap.set('n', '<leader>h', ' :wincmd h<CR>', { desc = 'Move right', noremap = true })
+vim.keymap.set('n', '<leader>j', ' :wincmd j<CR>', { desc = 'Move down', noremap = true })
+vim.keymap.set('n', '<leader>k', ' :wincmd k<CR>', { desc = 'Move up', noremap = true })
+vim.keymap.set('n', '<leader>l', ' :wincmd l<CR>', { desc = 'Move left', noremap = true })
+vim.keymap.set('n', '<leader>q', ' :wincmd q<CR>', { desc = 'Quit current pane', noremap = true })
+vim.keymap.set('n', '<leader>o', ' :wincmd o<CR>', { desc = 'Close other panes', noremap = true })
+-- Vertical resizes
+vim.keymap.set('n', '<leader>+', ' :vertical resize +10<CR>', { desc = 'Vertical resize ++', noremap = true })
+vim.keymap.set('n', '<leader>-', ' :vertical resize -10<CR>', { desc = 'Vertical resize --', noremap = true })
+-- Paste from system clipboard w/o formatting, copy back to system cipboard
+vim.keymap.set('n', '<leader>crf', '"+p0"+yydd', { desc = '[C]opy [R]emove [F]ormatting', noremap = true })
+-- Yank word from anywhere
+vim.keymap.set('n', '<leader>yw', 'yiw', { desc = '[Y]ank [W]ord', noremap = true })
+-- Paste last yanked word
+vim.keymap.set('n', '<leader>vw', '"0P', { desc = 'Paste yanked [Word]', noremap = true })
+-- Copy to system clipboard
+vim.keymap.set('v', '<leader>c', '"+y', { desc = '[C]opy to system clipboard', noremap = true })
+-- Copy all lines to system clipboard
+vim.keymap.set('v', '<leader>ya', 'gg0"+yG', { desc = '[C]opy to system clipboard', noremap = true })
+-- Paste from system clipboard
+vim.keymap.set('n', '<leader>v', ' "+p', { desc = '[Y]ank [A]ll lines to the system clipboard', noremap = true })
+-- Move line above
+vim.keymap.set('n', 'J', ' mzJ`z', { desc = 'Move line above', noremap = true })
+-- Move lines around in visual mode
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move highlighted line down', noremap = true })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move highlighted line up', noremap = true })
+-- Save and quit remaps
+vim.keymap.set('n', '<leader>w', ':w! <CR>', { desc = 'Save', noremap = true })
+vim.keymap.set('n', '<leader>wa', ':wa! <CR>', { desc = 'Save [A]ll', noremap = true })
+vim.keymap.set('n', '<leader>wq', ':wq <CR>', { desc = 'Save and Quit', noremap = true })
+vim.keymap.set('n', '<leader>Q', ':qa! <CR>', { desc = 'Force Quit All', noremap = true })
+-- Harpoon settings
+vim.keymap.set('n', '<leader>m', ':lua require("harpoon.mark").add_file()<CR>', { desc = '[M]ark file', noremap = true })
+vim.keymap.set('n', '<leader>n', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', { desc = '[N]avigate file',
+  noremap = true })
+vim.keymap.set('n', '<leader>1', ':lua require("harpoon.ui").nav_file(1)<CR>',
+  { desc = 'Navigate to marked file[1]', noremap = true })
+vim.keymap.set('n', '<leader>2', ':lua require("harpoon.ui").nav_file(2)<CR>',
+  { desc = 'Navigate to marked file[2]', noremap = true })
+vim.keymap.set('n', '<leader>3', ':lua require("harpoon.ui").nav_file(3)<CR>',
+  { desc = 'Navigate to marked file[3]', noremap = true })
+vim.keymap.set('n', '<leader>4', ':lua require("harpoon.ui").nav_file(4)<CR>',
+  { desc = 'Navigate to marked file[4]', noremap = true })
+vim.keymap.set('n', '<leader>5', ':lua require("harpoon.ui").nav_file(5)<CR>',
+  { desc = 'Navigate to marked file[5]', noremap = true })
+vim.keymap.set('n', '<leader>6', ':lua require("harpoon.ui").nav_file(6)<CR>',
+  { desc = 'Navigate to marked file[6]', noremap = true })
+vim.keymap.set('n', '<leader>7', ':lua require("harpoon.ui").nav_file(7)<CR>',
+  { desc = 'Navigate to marked file[7]', noremap = true })
+-- Git Stuff
+vim.keymap.set('n', '<leader>gs', ':G<CR>', { desc = '[G]it [S]tatus', noremap = true })
+vim.keymap.set('n', '<leader>gl', ':G log<CR>', { desc = '[G]it [L]ist', noremap = true })
+vim.keymap.set('n', '<leader>gj', ':diffget //3<CR>', { desc = '[G]it take right', noremap = true })
+vim.keymap.set('n', '<leader>gf', ':diffget //2<CR>', { desc = '[G]it take left', noremap = true })
+vim.keymap.set('n', '<leader>gd', ':Gdiffsplit <bar> :wincmd = <bar> :resize +20<CR>',
+  { desc = '[G]it [D]iff', noremap = true })
+vim.keymap.set('n', '<leader>gc', ':G commit <bar> :wincmd = <CR>', { desc = '[G]it Commit', noremap = true })
+vim.keymap.set('n', '<leader>gp', ':G -c push.default=current push <CR>', { desc = '[G]it [p]ush', noremap = true })
+vim.keymap.set('n', '<leader>gP', ':G fetch origin<bar>:G pull<CR>', { desc = '[G]', noremap = true })
+vim.keymap.set('n', '<leader>gwp', ':wq<bar>:G -c push.default=current push<CR><CR>',
+  { desc = '[G]it [P]ush', noremap = true })
+vim.keymap.set('n', '<leader>gS', ':G stash<CR>', { desc = '[G]it [S]tash', noremap = true })
+vim.keymap.set('n', '<leader>gSl', ':lua require("telescope.builtin").git_stash()<CR>',
+  { desc = '[G]it [S]tash [L]ist', noremap = true })
+vim.keymap.set('n', '<leader>gb', ':lua require("telescope.builtin").git_branches()<CR>', { desc = '[G]it [B]ranch',
+  noremap = true })
+vim.keymap.set('n', '<leader>gCl', ':lua require("telescope.builtin").git_commits()<CR>',
+  { desc = '[G]it [C]ommits [L]ist', noremap = true })
+vim.keymap.set('n', '<leader>gcm',
+  ':G reset --hard <bar> :G checkout master <bar>:G remote prune origin <bar> :G pull origin master<CR>',
+  { desc = '[G]it [C]heckout [M]aster', noremap = true })
+vim.keymap.set('n', '<leader>gpom', ':G pull origin master<CR>',
+  { desc = '[G]it [P]ull [O]rigin [M]aster', noremap = true })
+-- Generate Percentiles for JMX Results
+vim.keymap.set('n', '<leader>jp', ':!python D:\\JMeter\\Results\\generate_percentiles.py --file %<CR>',
+  { desc = '[J]Meter Results [P]ercentiles', noremap = true })
+vim.keymap.set("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true, desc = 'Copilot suggestion' })
+vim.keymap.set("n", "-", ':Explore<CR>', { desc = 'Open Netrw Explorer at current directory', noremap = true })
+-- Open powershell core in hortizontal split
+vim.keymap.set('n', '<leader>t',':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh <CR>', { desc = 'Open [T]erminal', noremap = true})
+-- LSP restart
+vim.keymap.set('n', '<leader>lr',':LspRestart<CR>', { desc = '[L]sp [R]estart', noremap = true})
