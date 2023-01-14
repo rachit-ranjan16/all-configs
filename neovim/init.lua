@@ -485,18 +485,24 @@ vim.keymap.set('n', '<leader>z', ':cprev<CR>', { desc = 'Previous in Quickfix', 
 vim.keymap.set('n', '<leader>lm', ':cprev<CR>', { desc = '[L]ist [M]arks', noremap = true })
 -- Save current buffer
 vim.keymap.set('n', '<leader>w', ':w!<CR>', { desc = 'Save File', noremap = true })
--- edit neovim config
+-- [Linux] Edit neovim config
 vim.keymap.set('n', '<leader>enc',
-  ":wincmd v <bar>:e C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<bar> :wincmd =<CR>"
+  ":wincmd v <bar>:e ~/.config/nvim/init.lua <bar> :wincmd =<CR>"
   , { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
--- Refresh neovim config
-vim.keymap.set('n', '<leader>rnc',
-  ":w! C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua <bar> :source C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<CR>"
-  , { desc = '[R]efresh [N]vim [C]onfig', noremap = true })
--- Edit powershell config
-vim.keymap.set('n', '<leader>epcp',
-  ":wincmd v <bar>:e E:\\OneDrive\\OneDrive - Microsoft\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1<bar> :wincmd =<CR>"
-  , { desc = '[E]dit [P]owershell [C]onfig [P]rofile', noremap = true })
+-- [Windows] Edit neovim config
+-- vim.keymap.set('n', '<leader>enc',
+--   ":wincmd v <bar>:e C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<bar> :wincmd =<CR>"
+--   , { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
+-- [Linux] Refresh neovim config
+vim.keymap.set('n', '<leader>rnc', ":w! ~/.config/nvim/init.lua <bar> :source ~/.config/nvim/init.lua<CR>", {desc = '[R]efresh [N]vim [C]onfig', noremap=true})
+-- -- [Windows] Refresh neovim config
+-- vim.keymap.set('n', '<leader>rnc',
+--   ":w! C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua <bar> :source C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<CR>"
+--   , { desc = '[R]efresh [N]vim [C]onfig', noremap = true })
+-- --[Windows] Edit powershell config
+-- vim.keymap.set('n', '<leader>epcp',
+--   ":wincmd v <bar>:e E:\\OneDrive\\OneDrive - Microsoft\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1<bar> :wincmd =<CR>"
+--   , { desc = '[E]dit [P]owershell [C]onfig [P]rofile', noremap = true })
 -- Convert tsv to csv
 vim.keymap.set('n', '<leader>tc', ':%s/\t/,/g<CR>', { desc = 'Covert [T]SV to [C]SV', noremap = true })
 vim.keymap.set('n', '<leader>u', ':UndotreeShow', { desc = '[U]ndo tree pane', noremap = true })
@@ -526,12 +532,12 @@ vim.keymap.set('n', '<leader>logj', ":wincmd v <bar> :wincmd l <bar> :e E:\\Logs
 -- Delete all lines in the current file.
 vim.keymap.set('n', '<leader>dL', ':1,$d <CR>', { desc = '[D]elete all [L]ines in the current file', noremap = true })
 -- Window Stuff
-vim.keymap.set('n', '<leader>h', ' :wincmd h<CR>', { desc = 'Move right', noremap = true })
-vim.keymap.set('n', '<leader>j', ' :wincmd j<CR>', { desc = 'Move down', noremap = true })
-vim.keymap.set('n', '<leader>k', ' :wincmd k<CR>', { desc = 'Move up', noremap = true })
-vim.keymap.set('n', '<leader>l', ' :wincmd l<CR>', { desc = 'Move left', noremap = true })
-vim.keymap.set('n', '<leader>q', ' :wincmd q<CR>', { desc = 'Quit current pane', noremap = true })
-vim.keymap.set('n', '<leader>o', ' :wincmd o<CR>', { desc = 'Close other panes', noremap = true })
+vim.keymap.set('n', '<leader>h', ':wincmd h<CR>', { desc = 'Move left', noremap = true })
+vim.keymap.set('n', '<leader>j', ':wincmd j<CR>', { desc = 'Move down', noremap = true })
+vim.keymap.set('n', '<leader>k', ':wincmd k<CR>', { desc = 'Move up', noremap = true })
+vim.keymap.set('n', '<leader>l', ':wincmd l<CR>', { desc = 'Move right', noremap = true })
+vim.keymap.set('n', '<leader>q', ':wincmd q<CR>', { desc = 'Quit current pane', noremap = true })
+vim.keymap.set('n', '<leader>o', ':wincmd o<CR>', { desc = 'Close other panes', noremap = true })
 -- Vertical resizes
 vim.keymap.set('n', '<leader>+', ' :vertical resize +10<CR>', { desc = 'Vertical resize ++', noremap = true })
 vim.keymap.set('n', '<leader>-', ' :vertical resize -10<CR>', { desc = 'Vertical resize --', noremap = true })
@@ -604,7 +610,11 @@ vim.keymap.set('n', '<leader>jp', ':!python D:\\JMeter\\Results\\generate_percen
   { desc = '[J]Meter Results [P]ercentiles', noremap = true })
 vim.keymap.set("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true, desc = 'Copilot suggestion' })
 vim.keymap.set("n", "-", ':Explore<CR>', { desc = 'Open Netrw Explorer at current directory', noremap = true })
--- Open powershell core in hortizontal split
-vim.keymap.set('n', '<leader>t',':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh <CR>', { desc = 'Open [T]erminal', noremap = true})
+-- [Linux] Open shell in hortizontal split
+vim.keymap.set('n', '<leader>t',':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal<CR>', { desc = 'Open [T]erminal', noremap = true})
+-- [Windows] Open powershell core in hortizontal split
+-- vim.keymap.set('n', '<leader>t',':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh <CR>', { desc = 'Open [T]erminal', noremap = true})
 -- LSP restart
 vim.keymap.set('n', '<leader>lr',':LspRestart<CR>', { desc = '[L]sp [R]estart', noremap = true})
+-- Show Keymaps
+vim.keymap.set('n', '<leader>km',':Telescope keymaps<CR>', { desc = 'Show [K]ey[M]aps', noremap = true})

@@ -1,8 +1,0 @@
-{
-  "diagnostic.checkCurrentLine": true,
-  "coc.preferences.formatOnSaveFiletypes": ["py", "yaml", "json"],
-  "pyright.enable": true,
-  "python.venvPath": "~/.envs/",
-  "python.linting.flake8Enabled": true,
-  "python.formatting.provider": "black"
-}
