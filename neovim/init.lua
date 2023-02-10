@@ -121,6 +121,9 @@ vim.o.smartcase = true
 vim.o.updatetime = 250
 vim.wo.signcolumn = 'yes'
 
+-- add extra lines while scrolling
+vim.o.scrolloff = 10
+
 -- Set colorscheme
 vim.o.termguicolors = true
 vim.cmd [[colorscheme onedark]]
@@ -312,7 +315,7 @@ local on_attach = function(_, bufnr)
   lsp_nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
   lsp_nmap('Gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-  lsp_nmap('Gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+  lsp_nmap('fr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   lsp_nmap('GI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
   lsp_nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
   lsp_nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
@@ -353,7 +356,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'pyright', 'tsserver', 'sumneko_lua', 'omnisharp' }
+local servers = { 'clangd', 'pyright', 'tsserver', 'sumneko_lua', 'omnisharp', 'marksman'}
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -591,7 +594,7 @@ vim.keymap.set('n', '<leader>gd', ':Gdiffsplit <bar> :wincmd = <bar> :resize +20
 vim.keymap.set('n', '<leader>gc', ':G commit <bar> :wincmd = <CR>', { desc = '[G]it Commit', noremap = true })
 vim.keymap.set('n', '<leader>gp', ':G -c push.default=current push <CR>', { desc = '[G]it [p]ush', noremap = true })
 vim.keymap.set('n', '<leader>gP', ':G fetch origin<bar>:G pull<CR>', { desc = '[G]', noremap = true })
-vim.keymap.set('n', '<leader>gwp', ':wq<bar>:G -c push.default=current push<CR><CR>',
+vim.keymap.set('n', '<leader>gwp', ':wq<bar><CR><CR>:G -c push.default=current push<CR>',
   { desc = '[G]it [P]ush', noremap = true })
 vim.keymap.set('n', '<leader>gS', ':G stash<CR>', { desc = '[G]it [S]tash', noremap = true })
 vim.keymap.set('n', '<leader>gSl', ':lua require("telescope.builtin").git_stash()<CR>',
