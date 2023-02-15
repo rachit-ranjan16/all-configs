@@ -553,7 +553,7 @@ vim.keymap.set('n', '<leader>vw', '"0P', { desc = 'Paste yanked [Word]', noremap
 -- Copy to system clipboard
 vim.keymap.set('v', '<leader>c', '"+y', { desc = '[C]opy to system clipboard', noremap = true })
 -- Copy all lines to system clipboard
-vim.keymap.set('v', '<leader>ya', 'gg0"+yG', { desc = '[C]opy to system clipboard', noremap = true })
+vim.keymap.set('n', '<leader>ya', 'gg0"+yG', { desc = '[C]opy to system clipboard', noremap = true })
 -- Paste from system clipboard
 vim.keymap.set('n', '<leader>v', ' "+p', { desc = '[Y]ank [A]ll lines to the system clipboard', noremap = true })
 -- Move line above
