@@ -10,6 +10,7 @@ local is_bootstrap = false
 require('packer').startup(function(use)
 	-- Package manager
 	use 'wbthomason/packer.nvim'
+    use {'j-hui/fidget.nvim', tag = 'legacy'}
 
 	use { -- LSP Configuration & Plugins
 		'neovim/nvim-lspconfig',
@@ -148,7 +149,10 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 -- See `:help vim.o`
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
+
+-- Ensure there are some lines before the cursor hits the bottom while scrolling
+vim.o.scrolloff = 15
 
 -- Make line numbers default
 vim.wo.number = true
@@ -159,8 +163,6 @@ vim.o.mouse = 'a'
 -- Enable break indent
 vim.o.breakindent = true
 
--- Save undo history
--- vim.o.undofile = true
 --
 -- Set shortmess options
 vim.o.shortmess = vim.o.shortmess .. 'A'
@@ -710,6 +712,8 @@ vim.keymap.set('n', '<leader>gcm',
 	{ desc = '[G]it [C]heckout [M]aster', noremap = true })
 vim.keymap.set('n', '<leader>gpom', ':G pull origin master<CR>',
 	{ desc = '[G]it [P]ull [O]rigin [M]aster', noremap = true })
+vim.keymap.set('n', '<leader>ch', ':noh',
+	{ desc = '[C]lear [H]ighlights', noremap = true })
 -- Generate Percentiles for JMX Results
 vim.keymap.set('n', '<leader>jp', ':!python D:\\JMeter\\Results\\generate_percentiles.py --file %<CR>',
 	{ desc = '[J]Meter Results [P]ercentiles', noremap = true })
