@@ -40,7 +40,58 @@ require('packer').startup(function(use)
 		after = 'nvim-treesitter',
 	}
 
-	use 'github/copilot.vim'
+	use {
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({
+				panel = {
+					enabled = true,
+					auto_refresh = false,
+					keymap = {
+						jump_prev = "[[",
+						jump_next = "]]",
+						accept = "<CR>",
+						refresh = "gr",
+						open = "<M-CR>"
+					},
+					layout = {
+						position = "bottom", -- | top | left | right
+						ratio = 0.4
+					},
+				},
+				suggestion = {
+					enabled = true,
+					auto_trigger = false,
+					debounce = 75,
+					keymap = {
+						accept = "<M-l>",
+						accept_word = false,
+						accept_line = false,
+						next = "<M-]>",
+						prev = "<M-[>",
+						dismiss = "<C-]>",
+					},
+				},
+				filetypes = {
+					yaml = false,
+					markdown = false,
+					help = false,
+					gitcommit = false,
+					gitrebase = false,
+					hgcommit = false,
+					svn = false,
+					cvs = false,
+					["."] = false,
+				},
+				copilot_node_command = 'node', -- Node.js version must be > 16.x
+				server_opts_overrides = {},
+
+
+			})
+		end,
+	}
 	use 'mbbill/undotree'
 	-- Git related plugins
 	use 'tpope/vim-fugitive'
@@ -48,10 +99,10 @@ require('packer').startup(function(use)
 	use 'lewis6991/gitsigns.nvim'
 
 	-- Editor friendly plugins
-	use 'navarasu/onedark.nvim' -- Theme inspired by Atom
-	use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+	use 'navarasu/onedark.nvim'            -- Theme inspired by Atom
+	use 'nvim-lualine/lualine.nvim'        -- Fancier statusline
 	use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-	use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
+	use 'numToStr/Comment.nvim'            -- "gc" to comment visual regions/lines
 	use 'ThePrimeagen/harpoon'
 	use 'rinx/nvim-ripgrep'
 	-- Fuzzy Finder (files, lsp, etc)
@@ -138,10 +189,6 @@ vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 
--- Enable copilot
-vim.b.copilot_enabled = true
-vim.g.copilot_no_tab_map = true
-
 -- [[ Basic Keymaps ]]
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -189,8 +236,9 @@ require('indent_blankline').setup {
 	show_trailing_blankline_indent = false,
 }
 
--- Gitsigns
--- See `:help gitsigns.txt`
+----------------------------
+-----Configure GitSigns----
+----------------------------
 require('gitsigns').setup {
 	signs = {
 		add = { text = '+' },
@@ -201,6 +249,53 @@ require('gitsigns').setup {
 	},
 }
 
+----------------------------
+-----Configure Copilot----
+----------------------------
+-- require('copilot').setup({
+--     panel = {
+--         enabled = true,
+--         auto_refresh = false,
+--         keymap = {
+--             jump_prev = "[[",
+--             jump_next = "]]",
+--             accept = "<C-J>",
+--             refresh = "gr",
+--             open = "<M-CR>"
+--         },
+--         layout = {
+--             position = "bottom", -- | top | left | right
+--             ratio = 0.4
+--         },
+--     },
+--     suggestion = {
+--         enabled = true,
+--         auto_trigger = false,
+--         debounce = 75,
+--         keymap = {
+--             accept = "<M-l>",
+--             accept_word = false,
+--             accept_line = false,
+--             next = "<M-]>",
+--             prev = "<M-[>",
+--             dismiss = "<C-]>",
+--         },
+--     },
+--     filetypes = {
+--         yaml = false,
+--         markdown = false,
+--         help = false,
+--         gitcommit = false,
+--         gitrebase = false,
+--         hgcommit = false,
+--         svn = false,
+--         cvs = false,
+--         ["."] = false,
+--     },
+--     copilot_node_command = 'node', -- Node.js version must be > 16.x
+--     server_opts_overrides = {},
+-- })
+--
 ----------------------------
 -----Configure Telescope----
 ----------------------------
@@ -348,16 +443,6 @@ local on_attach = function(_, bufnr)
 			vim.lsp.buf.formatting()
 		end
 	end, 'Format current buffer with LSP')
-
-	-- TODO Remove this
-	-- -- Create a command `:Format` local to the LSP buffer
-	-- vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-	--   if vim.lsp.buf.format then
-	--     vim.lsp.buf.format()
-	--   elseif vim.lsp.buf.formatting then
-	--     vim.lsp.buf.formatting()
-	--   end
-	-- end, { desc = 'Format current buffer with LSP' })
 end
 
 -- Setup mason so it can manage external tooling
@@ -435,7 +520,7 @@ cmp.setup {
 			behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
 		},
-		['<Tab>'] = cmp.mapping(function(fallback)
+		['<C-j>'] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item()
 			elseif luasnip.expand_or_jumpable() then
@@ -500,14 +585,15 @@ vim.keymap.set('n', '<leader>lm', ':cprev<CR>', { desc = '[L]ist [M]arks', norem
 vim.keymap.set('n', '<leader>w', ':w!<CR>', { desc = 'Save File', noremap = true })
 -- edit neovim config
 vim.keymap.set('n', '<leader>enc',
-  ":wincmd v <bar>:e ~/.config/nvim/init.lua <bar> :wincmd =<CR>"
-  , { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
+	":wincmd v <bar>:e ~/.config/nvim/init.lua <bar> :wincmd =<CR>"
+	, { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
 -- [Windows] Edit neovim config
 -- vim.keymap.set('n', '<leader>enc',
 -- 	":wincmd v <bar>:e C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<bar> :wincmd =<CR>"
 -- 	, { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
 -- [Linux] Refresh neovim config
-vim.keymap.set('n', '<leader>rnc', ":w! ~/.config/nvim/init.lua <bar> :source ~/.config/nvim/init.lua<CR>", {desc = '[R]efresh [N]vim [C]onfig', noremap=true})
+vim.keymap.set('n', '<leader>rnc', ":w! ~/.config/nvim/init.lua <bar> :source ~/.config/nvim/init.lua<CR>",
+	{ desc = '[R]efresh [N]vim [C]onfig', noremap = true })
 -- [Windows] Refresh neovim config
 -- vim.keymap.set('n', '<leader>rnc',
 -- 	":w! C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua <bar> :source C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<CR>"
@@ -580,8 +666,10 @@ vim.keymap.set('n', '<leader>wq', ':wq <CR>', { desc = 'Save and Quit', noremap 
 vim.keymap.set('n', '<leader>Q', ':qa! <CR>', { desc = 'Force Quit All', noremap = true })
 -- Harpoon settings
 vim.keymap.set('n', '<leader>m', ':lua require("harpoon.mark").add_file()<CR>', { desc = '[M]ark file', noremap = true })
-vim.keymap.set('n', '<leader>n', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', { desc = '[N]avigate file',
-	noremap = true })
+vim.keymap.set('n', '<leader>n', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', {
+	desc = '[N]avigate file',
+	noremap = true
+})
 vim.keymap.set('n', '<leader>1', ':lua require("harpoon.ui").nav_file(1)<CR>',
 	{ desc = 'Navigate to marked file[1]', noremap = true })
 vim.keymap.set('n', '<leader>2', ':lua require("harpoon.ui").nav_file(2)<CR>',
@@ -611,8 +699,10 @@ vim.keymap.set('n', '<leader>gwp', ':wq<bar>:G -c push.default=current push<CR><
 vim.keymap.set('n', '<leader>gS', ':G stash<CR>', { desc = '[G]it [S]tash', noremap = true })
 vim.keymap.set('n', '<leader>gSl', ':lua require("telescope.builtin").git_stash()<CR>',
 	{ desc = '[G]it [S]tash [L]ist', noremap = true })
-vim.keymap.set('n', '<leader>gb', ':lua require("telescope.builtin").git_branches()<CR>', { desc = '[G]it [B]ranch',
-	noremap = true })
+vim.keymap.set('n', '<leader>gb', ':lua require("telescope.builtin").git_branches()<CR>', {
+	desc = '[G]it [B]ranch',
+	noremap = true
+})
 vim.keymap.set('n', '<leader>gCl', ':lua require("telescope.builtin").git_commits()<CR>',
 	{ desc = '[G]it [C]ommits [L]ist', noremap = true })
 vim.keymap.set('n', '<leader>gcm',
@@ -623,13 +713,13 @@ vim.keymap.set('n', '<leader>gpom', ':G pull origin master<CR>',
 -- Generate Percentiles for JMX Results
 vim.keymap.set('n', '<leader>jp', ':!python D:\\JMeter\\Results\\generate_percentiles.py --file %<CR>',
 	{ desc = '[J]Meter Results [P]ercentiles', noremap = true })
-vim.keymap.set("i", "<C-j>", 'copilot#Accept("<CR>")', { silent = true, expr = true, desc = 'Copilot suggestion' })
 vim.keymap.set("n", "-", ':Explore<CR>', { desc = 'Open Netrw Explorer at current directory', noremap = true })
 -- [Linux] Open shell in hortizontal split
-vim.keymap.set('n', '<leader>t',':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal<CR>', { desc = 'Open [T]erminal', noremap = true})
+vim.keymap.set('n', '<leader>t', ':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal<CR>',
+	{ desc = 'Open [T]erminal', noremap = true })
 -- [Windows] Open powershell core in hortizontal split
 -- vim.keymap.set('n', '<leader>t',':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh <CR>', { desc = 'Open [T]erminal', noremap = true})
 -- LSP restart
 vim.keymap.set('n', '<leader>lr', ':LspRestart<CR>', { desc = '[L]sp [R]estart', noremap = true })
 vim.keymap.set('n', '<leader>Rg', ':lua require("nvim-ripgrep").grep()', { desc = '[L]sp [R]estart', noremap = true })
-vim.keymap.set('n', '<leader>km',':Telescope keymaps<CR>', { desc = 'Show [K]ey[M]aps', noremap = true})
+vim.keymap.set('n', '<leader>km', ':Telescope keymaps<CR>', { desc = 'Show [K]ey[M]aps', noremap = true })
