@@ -52,21 +52,25 @@ require('packer').startup(function(use)
     use 'lewis6991/gitsigns.nvim'
 
     -- Editor friendly plugins
-    use 'navarasu/onedark.nvim'            -- Theme inspired by Atom
-    use 'nvim-lualine/lualine.nvim'        -- Fancier statusline
+    use 'navarasu/onedark.nvim'               -- Theme inspired by Atom
+    use 'nvim-lualine/lualine.nvim'           -- Fancier statusline
     use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-    use 'numToStr/Comment.nvim'            -- "gc" to comment visual regions/lines
+    use 'numToStr/Comment.nvim'               -- "gc" to comment visual regions/lines
     use 'ThePrimeagen/harpoon'
     use 'rinx/nvim-ripgrep'
     -- Syntax highlighting for graphQL
     use 'jparise/vim-graphql'
     -- Fuzzy Finder (files, lsp, etc)
     use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
+    use {
+        'nvim-tree/nvim-tree.lua',
+        requires = {
+            'nvim-tree/nvim-web-devicons', -- optional
+        },
+    }
 
     -- Nvim Metals for Scala
     -- use({'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" }})
-    -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
-    -- use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
     -- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
     local has_plugins, plugins = pcall(require, 'custom.plugins')
     if has_plugins then
@@ -189,6 +193,44 @@ require('Comment').setup()
 -- Enable `lukas-reineke/indent-blankline.nvim`
 -- See `:help indent_blankline.txt`
 require('ibl').setup()
+
+require('nvim-tree').setup {
+    view = {
+            width = 35,
+            relativenumber = true,
+          },
+          -- change folder arrow icons
+          renderer = {
+            indent_markers = {
+              enable = true,
+            },
+            icons = {
+              glyphs = {
+                folder = {
+                  arrow_closed = "", -- arrow when folder is closed
+                  arrow_open = "", -- arrow when folder is open
+                },
+              },
+            },
+          },
+          -- disable window_picker for
+          -- explorer to work well with
+          -- window splits
+          actions = {
+            open_file = {
+              window_picker = {
+                enable = false,
+              },
+            },
+          },
+          filters = {
+            custom = { ".DS_Store" },
+          },
+          git = {
+            ignore = false,
+          },
+}
+
 ----------------------------
 -----Configure GitSigns----
 ----------------------------
@@ -288,7 +330,7 @@ require('nvim-treesitter.configs').setup {
     auto_install = true,
     highlight = {
         enable = true,
-        disable = { "txt" },
+        disable = { "txt" }
     },
     indent = {
         enable = true,
@@ -406,7 +448,8 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'tsserver', 'lua_ls', 'omnisharp', 'marksman', 'jsonls', 'pylsp', 'ruff_lsp' }
+local servers = { 'clangd', 'tsserver', 'lua_ls', 'omnisharp', 'marksman', 'jsonls', 'pylsp', 'ruff_lsp', 'jdtls',
+    'rust_analyzer' }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -542,24 +585,24 @@ vim.keymap.set('n', '<leader>lm', ':marks<CR>', { desc = '[L]ist [M]arks', norem
 -- Save current buffer
 vim.keymap.set('n', '<leader>w', ':w!<CR>', { desc = 'Save File', noremap = true })
 -- edit neovim config
--- vim.keymap.set('n', '<leader>enc',
---	":wincmd v <bar>:e C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<bar> :wincmd =<CR>"
---	, { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
+-- [Linux] Edit neovim config
+vim.keymap.set('n', '<leader>enc', ":wincmd v <bar>:e ~/.config/nvim/init.lua<bar>:wincmd =<CR>",
+    { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
 -- [Windows] Edit neovim config
-vim.keymap.set('n', '<leader>enc',
-    ":wincmd v <bar>:e C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<bar> :wincmd =<CR>"
-    , { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
+-- vim.keymap.set('n', '<leader>enc',
+--     ":wincmd v <bar>:e C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<bar> :wincmd =<CR>"
+--     , { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
 -- [Linux] Refresh neovim config
--- vim.keymap.set('n', '<leader>rnc', ":w! ~/.config/nvim/init.lua <bar> :source ~/.config/nvim/init.lua<CR>",
--- 	{ desc = '[R]efresh [N]vim [C]onfig', noremap = true })
+vim.keymap.set('n', '<leader>rnc', ":w! ~/.config/nvim/init.lua <bar> :source ~/.config/nvim/init.lua<CR>",
+    { desc = '[R]efresh [N]vim [C]onfig', noremap = true })
 -- [Windows] Refresh neovim config
-vim.keymap.set('n', '<leader>rnc',
-    ":w! C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua <bar> :source C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<CR>"
-    , { desc = '[R]efresh [N]vim [C]onfig', noremap = true })
--- [Windows] Edit powershell config
-vim.keymap.set('n', '<leader>epcp',
-    ":wincmd v <bar>:e E:\\OneDrive\\OneDrive - Microsoft\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1<bar> :wincmd =<CR>"
-    , { desc = '[E]dit [P]owershell [C]onfig [P]rofile', noremap = true })
+-- vim.keymap.set('n', '<leader>rnc',
+--     ":w! C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua <bar> :source C:\\Users\\raranjan\\AppData\\Local\\nvim\\init.lua<CR>"
+--     , { desc = '[R]efresh [N]vim [C]onfig', noremap = true })
+-- -- [Windows] Edit powershell config
+-- vim.keymap.set('n', '<leader>epcp',
+--     ":wincmd v <bar>:e E:\\OneDrive\\OneDrive - Microsoft\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1<bar> :wincmd =<CR>"
+--     , { desc = '[E]dit [P]owershell [C]onfig [P]rofile', noremap = true })
 -- Convert tsv to csv
 vim.keymap.set('n', '<leader>tc', ':%s/\t/,/g<CR>', { desc = 'Covert [T]SV to [C]SV', noremap = true })
 vim.keymap.set('n', '<leader>u', ':UndotreeShow<CR>', { desc = '[U]ndo tree pane', noremap = true })
@@ -567,10 +610,10 @@ vim.keymap.set('n', '<leader>u', ':UndotreeShow<CR>', { desc = '[U]ndo tree pane
 -- Fix exception logs
 vim.keymap.set('n', '<leader>fel', ":%s/\\n/\\r/g<CR>", { desc = '[F]ix [E]xception [L]ines', noremap = true })
 -- Fix Windows Exception Carriage Returns
-vim.keymap.set('n', '<leader>fcr',
-    ":%s/\\r\\n/\r/g <bar> :%s/\\\\\"/\"/g <bar> :%s/\\r\\\\n/\\r/g <bar> :%s/\\\\/\\//g <bar> %s/\\/\\//\\//g <bar> :noh <bar> :w <CR>"
-    ,
-    { desc = '[F]ix [C]arriage [R]eturns', noremap = true })
+-- vim.keymap.set('n', '<leader>fcr',
+--     ":%s/\\r\\n/\r/g <bar> :%s/\\\\\"/\"/g <bar> :%s/\\r\\\\n/\\r/g <bar> :%s/\\\\/\\//g <bar> %s/\\/\\//\\//g <bar> :noh <bar> :w <CR>"
+--     ,
+--     { desc = '[F]ix [C]arriage [R]eturns', noremap = true })
 -- Fix quote escapes
 vim.keymap.set('n', '<leader>feq', ":%s/\\\\\" / \\\"/g<bar> :noh <CR>", { desc = '[U]ndo tree pane', noremap = true })
 -- Expand python one liner list to line separated values
@@ -679,7 +722,7 @@ vim.keymap.set('n', '<leader>jp', ':!python D:\\JMeter\\Results\\generate_percen
     { desc = '[J]Meter Results [P]ercentiles', noremap = true })
 vim.keymap.set("n", "-", ':Explore<CR>', { desc = 'Open Netrw Explorer at current directory', noremap = true })
 -- [Linux] Open shell in hortizontal split
-vim.keymap.set('n', '<leader>t', ':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh<CR>',
+vim.keymap.set('n', '<leader>t', ':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal zsh<CR>',
     { desc = 'Open [T]erminal', noremap = true })
 -- [Windows] Open powershell core in hortizontal split
 -- vim.keymap.set('n', '<leader>t',':wincmd s <bar> :wincmd j <bar> :resize -10  <bar> :terminal pwsh <CR>', { desc = 'Open [T]erminal', noremap = true})
@@ -687,6 +730,15 @@ vim.keymap.set('n', '<leader>t', ':wincmd s <bar> :wincmd j <bar> :resize -10  <
 vim.keymap.set('n', '<leader>lr', ':LspRestart<CR>', { desc = '[L]sp [R]estart', noremap = true })
 vim.keymap.set('n', '<leader>Rg', ':lua require("nvim-ripgrep").grep()', { desc = '[L]sp [R]estart', noremap = true })
 vim.keymap.set('n', '<leader>km', ':Telescope keymaps<CR>', { desc = 'Show [K]ey[M]aps', noremap = true })
--- [Windows] TODO Figvre out how to make this work on mac
-vim.keymap.set('n', '<leader>oe', ':execute \'!start explorer /select,\' . expand(\'%:p\')<CR><CR>',
-    { desc = '[O]pen [E]xplorer', noremap = true })
+-- [Windows] Open file explorer in current directory
+-- vim.keymap.set('n', '<leader>oe', ':execute \'!start explorer /select,\' . expand(\'%:p\')<CR><CR>',
+--     { desc = '[O]pen [E]xplorer', noremap = true })
+-- [Windows] Open file explorer in current directory
+vim.keymap.set('n', '<leader>oe', ':execute "!open " . expand("%:p:h")<CR>',
+    { desc = '[O]pen in [F]inder', noremap = true })
+vim.keymap.set('n', '<leader>fe', '<cmd>NvimTreeToggle<CR>',
+    { desc = 'Toggle [F]ile [E]xplorer', noremap = true })
+vim.keymap.set('n', '<leader>fc', '<cmd>NvimTreeCollapse<CR>',
+    { desc = '[F]ile [C]ollapse', noremap = true })
+vim.keymap.set('n', '<leader>fr', '<cmd>NvimTreeCollapse<CR>',
+    { desc = '[F]ile [R]efresh', noremap = true })
