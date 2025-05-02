@@ -1,0 +1,130 @@
+" VSCode Vim Configuration (.vsvimrc)
+" Adapted from Neovim config with VSCode-specific equivalents
+
+" ============================================================================
+" Basic Settings
+" ============================================================================
+
+" Use space as the leader key
+let mapleader = ' '
+let maplocalleader = ' '
+
+" Search settings
+set hlsearch      " Highlight search results
+set ignorecase    " Case insensitive searching
+set smartcase     " Case sensitive if search contains uppercase
+
+" ============================================================================
+" Basic Keymaps
+" ============================================================================
+
+" Dealing with word wrap
+nnoremap k gk
+nnoremap j gj
+
+" Yank and paste operations
+nnoremap <leader>yw viw"0p
+nnoremap <leader>pw viw"0P
+nnoremap <leader>Y V"0y
+
+" Clear highlights
+nnoremap <leader>ch :noh<CR>
+
+" ============================================================================
+" Window Navigation
+" ============================================================================
+
+" Navigate between windows
+nnoremap <leader>h <C-w>h
+nnoremap <leader>l <C-w>l
+nnoremap <leader>k <C-w>k
+nnoremap <leader>j <C-w>j
+
+" ============================================================================
+" File Operations
+" ============================================================================
+
+" Reload file
+nnoremap <leader>re :e!<CR>
+
+" ============================================================================
+" Text Formatting
+" ============================================================================
+
+" Convert TSV to CSV
+nnoremap <leader>tc :%s/\t/,/g<CR>
+
+" Fix exception lines
+nnoremap <leader>fel :%s/\\n/\r/g<CR>
+
+" Fix escaped quotes
+nnoremap <leader>feq :%s/\\\" / \"/g<CR>
+
+" ============================================================================
+" VSCode-Specific Commands
+" ============================================================================
+
+" File Explorer (equivalent to NeoTree)
+nnoremap <leader>fe :call VSCodeNotify('workbench.view.explorer')<CR>
+
+" Search Files (equivalent to Telescope find_files)
+nnoremap <C-p> :call VSCodeNotify('workbench.action.quickOpen')<CR>
+
+" Grep/Find in Files (equivalent to Telescope live_grep)
+nnoremap <leader>lg :call VSCodeNotify('workbench.action.findInFiles')<CR>
+
+" Buffer navigation (equivalent to Telescope buffers)
+nnoremap <leader><space> :call VSCodeNotify('workbench.action.quickOpenPreviousRecentlyUsedEditor')<CR>
+
+" LSP functionality
+nnoremap <leader>rn :call VSCodeNotify('editor.action.rename')<CR>
+nnoremap <leader>ca :call VSCodeNotify('editor.action.quickFix')<CR>
+nnoremap Gd :call VSCodeNotify('editor.action.revealDefinition')<CR>
+nnoremap Gr :call VSCodeNotify('editor.action.goToReferences')<CR>
+nnoremap Gi :call VSCodeNotify('editor.action.goToImplementation')<CR>
+nnoremap K :call VSCodeNotify('editor.action.showHover')<CR>
+
+" Format document (equivalent to LSP format)
+nnoremap <leader>ff :call VSCodeNotify('editor.action.formatDocument')<CR>
+
+" Show symbols (equivalent to Telescope lsp_document_symbols)
+nnoremap <leader>ds :call VSCodeNotify('workbench.action.gotoSymbol')<CR>
+
+" Show workspace symbols (equivalent to Telescope lsp_workspace_symbols)
+nnoremap <leader>ws :call VSCodeNotify('workbench.action.showAllSymbols')<CR>
+
+" Git commands (equivalent to Fugitive/Telescope git functions)
+nnoremap <leader>gs :call VSCodeNotify('workbench.view.scm')<CR>
+nnoremap <leader>gb :call VSCodeNotify('git.checkout')<CR>
+nnoremap <leader>gd :call VSCodeNotify('git.openChange')<CR>
+
+" Terminal (equivalent to terminal toggle)
+nnoremap <leader>t :call VSCodeNotify('workbench.action.terminal.toggleTerminal')<CR>
+
+" Problems/diagnostics (equivalent to Telescope diagnostics)
+nnoremap <leader>fd :call VSCodeNotify('workbench.actions.view.problems')<CR>
+
+" Comment line/block (equivalent to Comment.nvim)
+xmap gc <Plug>VSCodeCommentary
+nmap gc <Plug>VSCodeCommentary
+omap gc <Plug>VSCodeCommentary
+nmap gcc <Plug>VSCodeCommentaryLine
+
+" Mark files (equivalent to Harpoon)
+nnoremap <leader>m :call VSCodeNotify('workbench.action.toggleEditorGroupLayout')<CR>
+nnoremap <leader>1 :call VSCodeNotify('workbench.action.openEditorAtIndex1')<CR>
+nnoremap <leader>2 :call VSCodeNotify('workbench.action.openEditorAtIndex2')<CR>
+nnoremap <leader>3 :call VSCodeNotify('workbench.action.openEditorAtIndex3')<CR>
+nnoremap <leader>4 :call VSCodeNotify('workbench.action.openEditorAtIndex4')<CR>
+nnoremap <leader>5 :call VSCodeNotify('workbench.action.openEditorAtIndex5')<CR>
+
+" Additional useful VSCode-specific mappings
+nnoremap <leader>no :call VSCodeNotify('workbench.action.splitEditorRight')<CR>:call VSCodeNotify('workbench.action.files.newUntitledFile')<CR>
+nnoremap <leader>ch :noh<CR>
+nnoremap <leader>lr :call VSCodeNotify('workbench.action.reloadWindow')<CR>
+
+" Open folder in system explorer
+nnoremap <leader>oe :call VSCodeNotify('revealFileInOS')<CR>
+
+" Settings
+nnoremap <leader>enc :call VSCodeNotify('workbench.action.openSettingsJson')<CR>

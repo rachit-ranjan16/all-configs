@@ -679,3 +679,20 @@ vim.keymap.set('n', '<leader>oe', ':execute "!open " . expand("%:p:h")<CR>',
 -- Neovim config editing
 vim.keymap.set('n', '<leader>enc', ":wincmd v <bar>:e ~/.config/nvim/init.lua<bar>:wincmd =<CR>",
     { desc = '[E]dit [N]eovim [C]onfig', noremap = true })
+
+-- Yank word 
+vim.keymap.set('n', '<leader>yw', 'viw"0p', { desc = '[Y]ank [W]ord', noremap = true })
+-- Paste word
+vim.keymap.set('n', '<leader>pw', 'viw"0P', { desc = '[P]aste [W]ord', noremap = true })
+-- Yank line
+vim.keymap.set('n', '<leader>Y', 'V"0y', { desc = '[Y]ank [L]ine', noremap = true })
+
+-- Window Operations
+-- navigate to left window
+vim.keymap.set('n', '<leader>h', '<C-w>h', { desc = 'Navigate to left window', noremap = true })
+-- navigate to right window
+vim.keymap.set('n', '<leader>l', '<C-w>l', { desc = 'Navigate to right window', noremap = true })
+-- navigate to up window
+vim.keymap.set('n', '<leader>k', '<C-w>k', { desc = 'Navigate to up window', noremap = true })
+-- navigate to down window
+vim.keymap.set('n', '<leader>j', '<C-w>j', { desc = 'Navigate to down window', noremap = true })
